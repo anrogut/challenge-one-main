@@ -2,12 +2,12 @@ package com.gft.challenge.tree;
 
 import java.util.*;
 
-abstract class AbstractTreeNode<T> implements TreeNode<T>, Iterable<T>{
+abstract class AbstractTreeNode<T> implements TreeNode<T>{
 
-    T thisNode;
-    List<TreeNode<T>> children;
+    protected T thisNode;
+    protected List<TreeNode<T>> children;
 
-    AbstractTreeNode(T t) {
+    protected AbstractTreeNode(T t) {
         thisNode = t;
         children = new ArrayList<>();
     }

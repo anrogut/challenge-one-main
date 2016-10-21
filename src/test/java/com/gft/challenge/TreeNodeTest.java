@@ -3,7 +3,6 @@ package com.gft.challenge;
 import com.gft.challenge.tree.SimpleTreeNode;
 import com.gft.challenge.tree.TreeNode;
 import com.gft.challenge.tree.TreePosterityProvider;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -15,10 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TreeNodeTest {
 
     private List<Integer> correctList = Arrays.asList(1,12,13,24);
-
-    @Before
-    public void setUp() {
-    }
 
     @Test
     public void getPosterityShouldReturnNotNull() {

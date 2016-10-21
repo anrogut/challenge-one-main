@@ -1,10 +1,8 @@
 package com.gft.challenge.tree;
 
-import java.util.Collection;
+import java.util.Iterator;
 
-public interface TreeNode<T> extends Iterable<T> {
+public interface TreeNode<T> {
 
-    T get();
-    TreeNode<T> addChild(T t);
-    Collection<TreeNode<T>> getChildrenCollection();
+    Iterator<TreeNode<T>> getChildrenCollection();
 }

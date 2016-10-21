@@ -6,12 +6,15 @@ import com.gft.challenge.tree.TreePosterityProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TreeNodeTest {
+
+    private List<Integer> correctList = Arrays.asList(1,12,13,24);
 
     @Before
     public void setUp() {
@@ -20,18 +23,19 @@ public class TreeNodeTest {
     @Test
     public void getPosterityShouldReturnNotNull() {
         TreeNode<Integer> root = new SimpleTreeNode<>(1);
-        TreeNode<Integer> child = root.addChild(2);
-        root.addChild(3);
-        child.addChild(4);
 
         assertThat(TreePosterityProvider.getPosterity(root)).isNotNull();
+        assertThat(TreePosterityProvider.getPosterity(root)).isInstanceOf(Iterator.class);
+        assertThat(TreePosterityProvider.getPosterity(root)).containsOnly(1);
     }
 
     @Test
     public void iteratorShouldIterateThroughThreeNodes() {
         TreeNode<Integer> root = new SimpleTreeNode<>(1);
-        TreeNode<Integer> child = root.addChild(2);
-        root.addChild(3);
-        child.addChild(4);
+        TreeNode<Integer> child = root.addChild(12);
+        root.addChild(13);
+        child.addChild(24);
+
+        assertThat(root).containsAll(correctList);
     }
 }

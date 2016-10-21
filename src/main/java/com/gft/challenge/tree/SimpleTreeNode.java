@@ -1,5 +1,6 @@
 package com.gft.challenge.tree;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 public class SimpleTreeNode<T> extends AbstractTreeNode<T> {
@@ -10,7 +11,7 @@ public class SimpleTreeNode<T> extends AbstractTreeNode<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new AbstractTreeNodeIterator();
+        return new AbstractTreeNodeIterator(this);
     }
 
     @Override
@@ -26,12 +27,7 @@ public class SimpleTreeNode<T> extends AbstractTreeNode<T> {
     }
 
     @Override
-    public Iterable<TreeNode<T>> getChildren() {
+    public Collection<TreeNode<T>> getChildrenCollection() {
         return children;
-    }
-
-    @Override
-    public boolean hasChild() {
-        return !children.isEmpty();
     }
 }

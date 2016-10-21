@@ -1,36 +1,35 @@
 package com.gft.challenge.tree;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-public abstract class AbstractTreeNode<T> implements TreeNode<T>, Iterable<T>{
+abstract class AbstractTreeNode<T> implements TreeNode<T>, Iterable<T>{
 
-    protected T thisNode;
-    protected List<TreeNode<T>> children;
+    T thisNode;
+    List<TreeNode<T>> children;
 
-    protected AbstractTreeNode(T t) {
+    AbstractTreeNode(T t) {
         thisNode = t;
-        children = new LinkedList<>();
+        children = new ArrayList<>();
     }
 
     class AbstractTreeNodeIterator implements Iterator<T> {
 
+        Queue<TreeNode<T>> queue = new LinkedList<>();
+
+        AbstractTreeNodeIterator(AbstractTreeNode<T> node) {
+            queue.add(node);
+        }
+
         @Override
         public boolean hasNext() {
-            return children.iterator().hasNext();
+            return !queue.isEmpty();
         }
 
         @Override
         public T next() {
-            return children.iterator().next().get();
+            TreeNode<T> node = queue.remove();
+            queue.addAll(node.getChildrenCollection());
+            return node.get();
         }
-    }
-
-    @Override
-    public String toString() {
-        return "AbstractTreeNode{" +
-                "thisNode=" + thisNode +
-                '}';
     }
 }

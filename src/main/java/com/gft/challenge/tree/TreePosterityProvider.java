@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public class TreePosterityProvider {
 
-    public static Iterator getPosterity(TreeNode root) {
+    public static <T> Iterator<T> getPosterity(TreeNode<T> root) {
         return root.iterator();
     }
 }

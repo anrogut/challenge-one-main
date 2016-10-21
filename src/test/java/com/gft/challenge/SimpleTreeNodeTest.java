@@ -53,8 +53,6 @@ public class SimpleTreeNodeTest {
         child.addChild("child22");
         child.addChild("child23");
 
-        root.forEach(System.out::println);
-
-        //assertThat(root).containsAll(correctStringList);
+        assertThat(root).containsAll(correctStringList);
     }
 }

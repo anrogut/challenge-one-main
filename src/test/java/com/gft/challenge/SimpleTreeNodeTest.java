@@ -2,7 +2,6 @@ package com.gft.challenge;
 
 import com.gft.challenge.tree.SimpleTreeNode;
 import com.gft.challenge.tree.TreePosterityProvider;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.Arrays;

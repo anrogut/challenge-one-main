@@ -3,15 +3,10 @@ package com.gft.challenge.tree;
 import java.util.Iterator;
 import java.util.Stack;
 
-public class TreePosterityProvider<T> implements Iterable<TreeNode<T>> {
+public class TreePosterityProvider {
 
     public static <T> Iterator<TreeNode<T>> getPosterity(TreeNode<T> root) {
         return new TreeNodeIterator<>(root);
-    }
-
-    @Override
-    public Iterator<TreeNode<T>> iterator() {
-        return null;
     }
 
     private static class TreeNodeIterator<T> implements Iterator<TreeNode<T>> {

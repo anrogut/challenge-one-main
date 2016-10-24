@@ -18,7 +18,8 @@ public class FileTreeNodeTest {
 
     private List<FileTreeNode<File>> correctList = Arrays.asList(
             new FileTreeNode<>(new File("src/main/java/com/gft/challenge/tree/TreeNode.java").getAbsoluteFile()),
-            new FileTreeNode<>(new File("src/test/java/com/gft/challenge/FileTreeNodeTest.java").getAbsoluteFile())
+            new FileTreeNode<>(new File("src/test/java/com/gft/challenge/FileTreeNodeTest.java").getAbsoluteFile()),
+            new FileTreeNode<>(new File("src/main/resources/application.properties").getAbsoluteFile())
     );
 
     @Test

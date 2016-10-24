@@ -14,7 +14,7 @@ final class FileTreeNode<T extends File> implements TreeNode<T> {
     }
 
     @Override
-    public Iterator<TreeNode<T>> getChildrenCollection() {
+    public Iterator<TreeNode<T>> getChildren() {
         List<TreeNode<T>> children = new ArrayList<>();
         File[] fileArray = t.listFiles();
         if (fileArray != null) {

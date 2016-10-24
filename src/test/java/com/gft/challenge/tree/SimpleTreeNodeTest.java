@@ -28,8 +28,8 @@ public class SimpleTreeNodeTest {
     public void getPosterityShouldNotReturnNull() {
         SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1);
 
-        assertThat(TreePosterityProvider.getDescendants(root)).isNotNull();
-        assertThat(TreePosterityProvider.getDescendants(root)).isInstanceOf(Iterator.class);
+        assertThat(TreeDescendantsProvider.getDescendants(root)).isNotNull();
+        assertThat(TreeDescendantsProvider.getDescendants(root)).isInstanceOf(Iterator.class);
     }
 
     @Test
@@ -37,8 +37,8 @@ public class SimpleTreeNodeTest {
         SimpleTreeNode<Integer> root = new SimpleTreeNode<>(
                 0, Arrays.asList(new SimpleTreeNode<>(1),new SimpleTreeNode<>(2)));
 
-        assertThat(TreePosterityProvider.getDescendants(root).next()).isInstanceOf(SimpleTreeNode.class);
-        assertThat(TreePosterityProvider.getDescendants(root)).containsOnlyElementsOf(correctIntegerList);
+        assertThat(TreeDescendantsProvider.getDescendants(root).next()).isInstanceOf(SimpleTreeNode.class);
+        assertThat(TreeDescendantsProvider.getDescendants(root)).containsOnlyElementsOf(correctIntegerList);
     }
 
     @Test
@@ -50,6 +50,6 @@ public class SimpleTreeNodeTest {
         child.addChild("child22");
         child.addChild("child23");
 
-        assertThat(TreePosterityProvider.getDescendants(root)).containsAll(correctStringList);
+        assertThat(TreeDescendantsProvider.getDescendants(root)).containsAll(correctStringList);
     }
 }

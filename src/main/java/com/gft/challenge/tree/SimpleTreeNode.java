@@ -17,14 +17,14 @@ final class SimpleTreeNode<T> implements TreeNode<T>{
         this.children = children;
     }
 
-    SimpleTreeNode<T> addChild(T t) {
+    public SimpleTreeNode<T> addChild(T t) {
         SimpleTreeNode<T> childNode = new SimpleTreeNode<>(t);
         children.add(childNode);
         return childNode;
     }
 
     @Override
-    public Iterator<TreeNode<T>> getChildrenCollection() {
+    public Iterator<TreeNode<T>> getChildren() {
         return children.iterator();
     }
 

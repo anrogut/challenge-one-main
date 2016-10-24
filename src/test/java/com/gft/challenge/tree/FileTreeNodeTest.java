@@ -23,12 +23,12 @@ public class FileTreeNodeTest {
     public void iteratorShouldNotReturnNull() {
         FileTreeNode<File> root = new FileTreeNode<>(new File(ROOT_PATH));
 
-        assertThat(TreePosterityProvider.getDescendants(root)).isNotNull();
+        assertThat(TreeDescendantsProvider.getDescendants(root)).isNotNull();
     }
 
     @Test
     public void shouldContainCorrectFiles() {
-        Iterator<TreeNode<File>> it = TreePosterityProvider
+        Iterator<TreeNode<File>> it = TreeDescendantsProvider
                 .getDescendants(new FileTreeNode<>(new File(ROOT_PATH).getAbsoluteFile()));
 
         assertThat(it).containsAll(correctList);

@@ -3,9 +3,9 @@ package com.gft.challenge.tree;
 import java.util.Iterator;
 import java.util.Stack;
 
-class TreePosterityProvider {
+class TreeDescendantsProvider {
 
-    static <T> Iterator<TreeNode<T>> getDescendants(TreeNode<T> root) {
+    public static <T> Iterator<TreeNode<T>> getDescendants(TreeNode<T> root) {
         return new TreeNodeIterator<>(root);
     }
 
@@ -15,7 +15,7 @@ class TreePosterityProvider {
         private Iterator<TreeNode<T>> currentIterator;
 
         TreeNodeIterator(TreeNode<T> node) {
-            childrenIterators.push(node.getChildrenCollection());
+            childrenIterators.push(node.getChildren());
         }
 
         @Override
@@ -38,8 +38,8 @@ class TreePosterityProvider {
                 if (!currentIterator.hasNext()) {
                     childrenIterators.remove(currentIterator);
                 }
-                if (node.getChildrenCollection().hasNext()) {
-                    childrenIterators.push(node.getChildrenCollection());
+                if (node.getChildren().hasNext()) {
+                    childrenIterators.push(node.getChildren());
                 }
                 return node;
             }

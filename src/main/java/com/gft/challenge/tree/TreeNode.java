@@ -4,5 +4,5 @@ import java.util.Iterator;
 
 interface TreeNode<T> {
 
-    Iterator<TreeNode<T>> getChildrenCollection();
+    Iterator<TreeNode<T>> getChildren();
 }

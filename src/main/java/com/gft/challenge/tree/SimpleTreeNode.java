@@ -2,22 +2,22 @@ package com.gft.challenge.tree;
 
 import java.util.*;
 
-public final class SimpleTreeNode<T> implements TreeNode<T>{
+final class SimpleTreeNode<T> implements TreeNode<T>{
 
     private T t;
     private List<TreeNode<T>> children;
 
-    public SimpleTreeNode(T t) {
+    SimpleTreeNode(T t) {
         this.t = t;
         children = new ArrayList<>();
     }
 
-    public SimpleTreeNode(T t, List<TreeNode<T>> children) {
+    SimpleTreeNode(T t, List<TreeNode<T>> children) {
         this.t = t;
         this.children = children;
     }
 
-    public SimpleTreeNode<T> addChild(T t) {
+    SimpleTreeNode<T> addChild(T t) {
         SimpleTreeNode<T> childNode = new SimpleTreeNode<>(t);
         children.add(childNode);
         return childNode;

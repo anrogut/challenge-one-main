@@ -1,0 +1,5 @@
+server:
+  port: 80
+
+observable:
+  path: "C:/Windows/Temp"

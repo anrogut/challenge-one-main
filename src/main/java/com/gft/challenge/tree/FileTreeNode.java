@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public final class FileTreeNode<T extends File> implements TreeNode<T> {
+final class FileTreeNode<T extends File> implements TreeNode<T> {
 
     private File t;
 
-    public FileTreeNode(File t) {
+    FileTreeNode(File t) {
         this.t = t;
     }
 

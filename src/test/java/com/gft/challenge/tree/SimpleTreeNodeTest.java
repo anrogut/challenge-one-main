@@ -1,7 +1,5 @@
-package com.gft.challenge;
+package com.gft.challenge.tree;
 
-import com.gft.challenge.tree.SimpleTreeNode;
-import com.gft.challenge.tree.TreePosterityProvider;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -30,8 +28,8 @@ public class SimpleTreeNodeTest {
     public void getPosterityShouldNotReturnNull() {
         SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1);
 
-        assertThat(TreePosterityProvider.getPosterity(root)).isNotNull();
-        assertThat(TreePosterityProvider.getPosterity(root)).isInstanceOf(Iterator.class);
+        assertThat(TreePosterityProvider.getDescendants(root)).isNotNull();
+        assertThat(TreePosterityProvider.getDescendants(root)).isInstanceOf(Iterator.class);
     }
 
     @Test
@@ -39,8 +37,8 @@ public class SimpleTreeNodeTest {
         SimpleTreeNode<Integer> root = new SimpleTreeNode<>(
                 0, Arrays.asList(new SimpleTreeNode<>(1),new SimpleTreeNode<>(2)));
 
-        assertThat(TreePosterityProvider.getPosterity(root).next()).isInstanceOf(SimpleTreeNode.class);
-        assertThat(TreePosterityProvider.getPosterity(root)).containsOnlyElementsOf(correctIntegerList);
+        assertThat(TreePosterityProvider.getDescendants(root).next()).isInstanceOf(SimpleTreeNode.class);
+        assertThat(TreePosterityProvider.getDescendants(root)).containsOnlyElementsOf(correctIntegerList);
     }
 
     @Test
@@ -52,6 +50,6 @@ public class SimpleTreeNodeTest {
         child.addChild("child22");
         child.addChild("child23");
 
-        assertThat(TreePosterityProvider.getPosterity(root)).containsAll(correctStringList);
+        assertThat(TreePosterityProvider.getDescendants(root)).containsAll(correctStringList);
     }
 }

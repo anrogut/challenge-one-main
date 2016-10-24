@@ -3,9 +3,9 @@ package com.gft.challenge.tree;
 import java.util.Iterator;
 import java.util.Stack;
 
-public class TreePosterityProvider {
+class TreePosterityProvider {
 
-    public static <T> Iterator<TreeNode<T>> getPosterity(TreeNode<T> root) {
+    static <T> Iterator<TreeNode<T>> getDescendants(TreeNode<T> root) {
         return new TreeNodeIterator<>(root);
     }
 

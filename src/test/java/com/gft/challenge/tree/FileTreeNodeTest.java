@@ -1,8 +1,5 @@
-package com.gft.challenge;
+package com.gft.challenge.tree;
 
-import com.gft.challenge.tree.FileTreeNode;
-import com.gft.challenge.tree.TreeNode;
-import com.gft.challenge.tree.TreePosterityProvider;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,21 +15,21 @@ public class FileTreeNodeTest {
 
     private List<FileTreeNode<File>> correctList = Arrays.asList(
             new FileTreeNode<>(new File("src/main/java/com/gft/challenge/tree/TreeNode.java").getAbsoluteFile()),
-            new FileTreeNode<>(new File("src/test/java/com/gft/challenge/FileTreeNodeTest.java").getAbsoluteFile()),
-            new FileTreeNode<>(new File("src/main/resources/application.properties").getAbsoluteFile())
+            new FileTreeNode<>(new File("src/test/java/com/gft/challenge/tree/FileTreeNodeTest.java").getAbsoluteFile()),
+            new FileTreeNode<>(new File("src/main/resources/application.yml").getAbsoluteFile())
     );
 
     @Test
     public void iteratorShouldNotReturnNull() {
         FileTreeNode<File> root = new FileTreeNode<>(new File(ROOT_PATH));
 
-        assertThat(TreePosterityProvider.getPosterity(root)).isNotNull();
+        assertThat(TreePosterityProvider.getDescendants(root)).isNotNull();
     }
 
     @Test
     public void shouldContainCorrectFiles() {
         Iterator<TreeNode<File>> it = TreePosterityProvider
-                .getPosterity(new FileTreeNode<>(new File(ROOT_PATH).getAbsoluteFile()));
+                .getDescendants(new FileTreeNode<>(new File(ROOT_PATH).getAbsoluteFile()));
 
         assertThat(it).containsAll(correctList);
     }

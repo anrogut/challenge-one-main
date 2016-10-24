@@ -40,8 +40,8 @@ public class SimpleTreeNodeTest {
         SimpleTreeNode<Integer> root = new SimpleTreeNode<>(
                 0, Arrays.asList(new SimpleTreeNode<>(1),new SimpleTreeNode<>(2)));
 
-        assertThat(root.iterator().next()).isInstanceOf(SimpleTreeNode.class);
-        assertThat(root).containsOnlyElementsOf(correctIntegerList);
+        assertThat(TreePosterityProvider.getPosterity(root).next()).isInstanceOf(SimpleTreeNode.class);
+        assertThat(TreePosterityProvider.getPosterity(root)).containsOnlyElementsOf(correctIntegerList);
     }
 
     @Test
@@ -53,6 +53,6 @@ public class SimpleTreeNodeTest {
         child.addChild("child22");
         child.addChild("child23");
 
-        assertThat(root).containsAll(correctStringList);
+        assertThat(TreePosterityProvider.getPosterity(root)).containsAll(correctStringList);
     }
 }

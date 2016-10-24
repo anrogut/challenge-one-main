@@ -1,40 +1,49 @@
 package com.gft.challenge.tree;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public final class FileTreeNode<T extends File> implements TreeNode<T>, Iterable {
+public final class FileTreeNode<T extends File> implements TreeNode<T> {
 
-    private T t;
-    private List<TreeNode<T>> children;
+    private File t;
 
-    public FileTreeNode(T t) {
+    public FileTreeNode(File t) {
         this.t = t;
     }
 
     @Override
     public Iterator<TreeNode<T>> getChildrenCollection() {
-
-        return null;
+        List<TreeNode<T>> children = new ArrayList<>();
+        File[] fileArray = t.listFiles();
+        if (fileArray != null) {
+            for(File f : fileArray) {
+                children.add(new FileTreeNode<>(f));
+            }
+        }
+        return children.iterator();
     }
 
     @Override
-    public Iterator iterator() {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return new FileTreeNodeIterator();
+        FileTreeNode<?> that = (FileTreeNode<?>) o;
+
+        return t != null ? t.equals(that.t) : that.t == null;
     }
 
-    class FileTreeNodeIterator implements Iterator<T> {
+    @Override
+    public int hashCode() {
+        return t != null ? t.hashCode() : 0;
+    }
 
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public T next() {
-            return null;
-        }
+    @Override
+    public String toString() {
+        return "FileTreeNode{" +
+                "t=" + t.getAbsolutePath() +
+                '}';
     }
 }

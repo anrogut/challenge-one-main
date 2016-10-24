@@ -43,11 +43,4 @@ public final class SimpleTreeNode<T> implements TreeNode<T>{
     public int hashCode() {
         return t != null ? t.hashCode() : 0;
     }
-
-    @Override
-    public String toString() {
-        return "SimpleTreeNode{" +
-                "t=" + t +
-                '}';
-    }
 }

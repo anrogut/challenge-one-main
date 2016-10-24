@@ -31,7 +31,7 @@ public class SimpleTreeNodeTest {
     public void getPosterityShouldNotReturnNull() {
         SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1);
 
-        Assertions.assertThat(TreePosterityProvider.getPosterity(root)).isNotNull();
+        assertThat(TreePosterityProvider.getPosterity(root)).isNotNull();
         assertThat(TreePosterityProvider.getPosterity(root)).isInstanceOf(Iterator.class);
     }
 

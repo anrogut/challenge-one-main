@@ -16,8 +16,8 @@ public class TreePosterityProvider<T> implements Iterable<TreeNode<T>> {
 
     private static class TreeNodeIterator<T> implements Iterator<TreeNode<T>> {
 
-        Stack<Iterator<TreeNode<T>>> childrenIterators = new Stack<>();
-        Iterator<TreeNode<T>> currentIterator;
+        private Stack<Iterator<TreeNode<T>>> childrenIterators = new Stack<>();
+        private Iterator<TreeNode<T>> currentIterator;
 
         TreeNodeIterator(TreeNode<T> node) {
             childrenIterators.push(node.getChildrenCollection());

@@ -29,7 +29,7 @@ public class FileTreeNodeTest {
     }
 
     @Test
-    public void shouldWorkFine() {
+    public void shouldContainCorrectFiles() {
         Iterator<TreeNode<File>> it = TreePosterityProvider
                 .getPosterity(new FileTreeNode<>(new File(ROOT_PATH).getAbsoluteFile()));
 

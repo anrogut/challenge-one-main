@@ -39,11 +39,4 @@ public final class FileTreeNode<T extends File> implements TreeNode<T> {
     public int hashCode() {
         return t != null ? t.hashCode() : 0;
     }
-
-    @Override
-    public String toString() {
-        return "FileTreeNode{" +
-                "t=" + t.getAbsolutePath() +
-                '}';
-    }
 }

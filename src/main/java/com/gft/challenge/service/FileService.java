@@ -8,9 +8,12 @@ import java.io.IOException;
 @Service
 class FileService {
 
-    public File createFile(String fullPath) throws IOException {
+    File createFile(String fullPath) throws IOException {
         File newFile = new File(fullPath);
-        newFile.createNewFile();
-        return newFile;
+        if (newFile.createNewFile()) {
+            return newFile;
+        } else {
+            throw new IOException("File not created");
+        }
     }
 }

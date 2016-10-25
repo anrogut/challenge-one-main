@@ -4,16 +4,18 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 class FileService {
 
     File createFile(String fullPath) throws IOException {
         File newFile = new File(fullPath);
-        if (newFile.createNewFile()) {
-            return newFile;
-        } else {
-            throw new IOException("File not created");
-        }
+        Path path = Paths.get(fullPath);
+        Files.createFile(path);
+
+        return newFile;
     }
 }

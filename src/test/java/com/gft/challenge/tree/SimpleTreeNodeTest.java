@@ -34,7 +34,7 @@ public class SimpleTreeNodeTest {
     }
 
     @Test
-    public void iteratorShouldIterateThroughFourStringNodes() {
+    public void iteratorShouldIterateThroughStringNodesCorrectly() {
         SimpleNode<String> root = new SimpleNode<>("root");
         root.addChild("child1").addChild("child11").addChild("child111");
         SimpleNode<String> child = root.addChild("child2");

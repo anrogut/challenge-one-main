@@ -20,11 +20,11 @@ public class FileServiceTest {
 
     @Test
     public void shouldCreateFileWithGivenName() throws IOException{
-        FileService fileService = new FileService();
+        FileService fileService = new FileService(tempFolder.getRoot().getAbsolutePath());
         String fileName = "test.txt";
-        File createdFile = fileService.createFile(tempFolder.getRoot().getAbsolutePath() + File.separator + fileName);
+        fileService.createFile(fileName);
 
-        assertThat(createdFile.exists());
+        assertThat(new File(tempFolder.getRoot().getAbsolutePath() + File.separator + fileName).exists());
         assertThat(tempFolder.getRoot().listFiles())
                 .contains(new File(tempFolder.getRoot().getAbsolutePath() + File.separator + fileName));
     }

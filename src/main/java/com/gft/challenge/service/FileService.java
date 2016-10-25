@@ -1,21 +1,23 @@
 package com.gft.challenge.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
-class FileService {
+public class FileService {
 
-    File createFile(String fullPath) throws IOException {
-        File newFile = new File(fullPath);
-        Path path = Paths.get(fullPath);
-        Files.createFile(path);
+    private String path = "";
 
-        return newFile;
+    public FileService(@Value("${observable.path}") String path) {
+        this.path = path;
+    }
+
+    public boolean createFile(String fileName) throws IOException {
+        File newFile = new File(path + File.separator + fileName);
+
+        return newFile.createNewFile();
     }
 }

@@ -24,6 +24,7 @@ class TreeDescendantsProvider {
 
         TreeNodeIterator(Node<T> node) {
             childrenIterators.push(node.getChildren());
+            currentIterator = childrenIterators.peek();
         }
 
         @Override
@@ -37,21 +38,15 @@ class TreeDescendantsProvider {
 
         @Override
         public Node<T> next() {
-            if((currentIterator == null || !currentIterator.hasNext())) {
+            if(!currentIterator.hasNext()) {
+                childrenIterators.remove(currentIterator);
                 currentIterator = childrenIterators.peek();
             }
-            if(currentIterator.hasNext()) {
-                Node<T> node = currentIterator.next();
-                if (!currentIterator.hasNext()) {
-                    childrenIterators.remove(currentIterator);
-                }
-                if (node.getChildren().hasNext()) {
-                    childrenIterators.push(node.getChildren());
-                }
-                return node;
+            Node<T> node = currentIterator.next();
+            if (node.getChildren().hasNext()) {
+                childrenIterators.push(node.getChildren());
             }
-            return next();
+            return node;
         }
-
     }
 }

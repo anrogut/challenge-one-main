@@ -2,10 +2,7 @@ package com.gft.challenge.tree;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +11,7 @@ public class SimpleTreeNodeTest {
     @Test
     public void shouldReturnEmptyIteratorWhenGivenRootIsNull() {
         assertThat(TreeDescendantsProvider.getDescendants(null)).isNotNull();
-        assertThat(TreeDescendantsProvider.getDescendants(null).hasNext()).isFalse();
+        assertThat(TreeDescendantsProvider.getDescendants(null)).isEmpty();
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -23,14 +20,10 @@ public class SimpleTreeNodeTest {
     }
 
     @Test
-    public void shouldWorkForSimpleOneLevelTree() {
-        SimpleNode<Integer> root = new SimpleNode<>(
-                0, Arrays.asList(new SimpleNode<>(1),new SimpleNode<>(2)));
-        List<Integer> correctIntegerList = Arrays.asList(1, 2);
-        List<Integer> rawNodesFromIterator = new ArrayList<>();
-        TreeDescendantsProvider.getDescendants(root).forEachRemaining((e) -> rawNodesFromIterator.add(e.get()));
+    public void shouldReturnEmptyIteratorWhenRootHasNoChildren() {
+        SimpleNode<Integer> root = new SimpleNode<>(0, Collections.emptyList());
 
-        assertThat(rawNodesFromIterator).containsOnlyElementsOf(correctIntegerList);
+        assertThat(TreeDescendantsProvider.getDescendants(root)).isEmpty();
     }
 
     @Test

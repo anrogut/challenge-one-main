@@ -21,10 +21,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FileControllerTest {
 
     @Mock
-    FileService fileService;
+    private FileService fileService;
 
     @InjectMocks
-    FileController fileController;
+    private FileController fileController;
 
     private MockMvc mockMvc;
 

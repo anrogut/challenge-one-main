@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 class TreeDescendantsProvider {
@@ -40,7 +41,11 @@ class TreeDescendantsProvider {
         public Node<T> next() {
             if(!currentIterator.hasNext()) {
                 childrenIterators.remove(currentIterator);
-                currentIterator = childrenIterators.peek();
+                if(!childrenIterators.isEmpty()) {
+                    currentIterator = childrenIterators.peek();
+                } else {
+                    throw new NoSuchElementException();
+                }
             }
             Node<T> node = currentIterator.next();
             if (node.getChildren().hasNext()) {

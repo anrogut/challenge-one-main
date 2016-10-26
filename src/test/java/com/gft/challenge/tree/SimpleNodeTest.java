@@ -5,12 +5,12 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class SimpleNodeTest {
 
     @Test
     public void shouldReturnEmptyIteratorWhenGivenRootIsNull() {
-        assertThat(TreeDescendantsProvider.getDescendants(null)).isNotNull();
         assertThat(TreeDescendantsProvider.getDescendants(null)).isEmpty();
     }
 
@@ -22,8 +22,11 @@ public class SimpleNodeTest {
     @Test
     public void shouldReturnEmptyIteratorWhenRootHasNoChildren() {
         SimpleNode<Integer> root = new SimpleNode<>(0, Collections.emptyList());
+        Iterator it = TreeDescendantsProvider.getDescendants(root);
 
-        assertThat(TreeDescendantsProvider.getDescendants(root)).isEmpty();
+        assertThat(it).isEmpty();
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(it::next);
     }
 
     @Test

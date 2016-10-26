@@ -6,7 +6,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SimpleTreeNodeTest {
+public class SimpleNodeTest {
 
     @Test
     public void shouldReturnEmptyIteratorWhenGivenRootIsNull() {

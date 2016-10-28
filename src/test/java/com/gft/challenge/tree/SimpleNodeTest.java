@@ -14,11 +14,6 @@ public class SimpleNodeTest {
         assertThat(TreeDescendantsProvider.getDescendants(null)).isEmpty();
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void shouldThrowNoSuchElementExceptionWhenGettingNextFromEmptyIterator() {
-        TreeDescendantsProvider.getDescendants(null).next();
-    }
-
     @Test
     public void shouldReturnEmptyIteratorWhenRootHasNoChildren() {
         SimpleNode<Integer> root = new SimpleNode<>(0, Collections.emptyList());

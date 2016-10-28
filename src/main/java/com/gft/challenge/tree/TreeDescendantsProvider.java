@@ -7,8 +7,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-class TreeDescendantsProvider {
-
+final class TreeDescendantsProvider {
 
     @Contract("null -> !null; !null -> !null")
     static <T> Iterator<Node<T>> getDescendants(Node<T> root) {
@@ -21,34 +20,28 @@ class TreeDescendantsProvider {
     private static class TreeNodeIterator<T> implements Iterator<Node<T>> {
 
         private Stack<Iterator<Node<T>>> childrenIterators = new Stack<>();
-        private Iterator<Node<T>> currentIterator;
 
         TreeNodeIterator(Node<T> node) {
-            childrenIterators.push(node.getChildren());
-            currentIterator = childrenIterators.peek();
+            if(node.getChildren().hasNext()) {
+                childrenIterators.push(node.getChildren());
+            }
         }
 
         @Override
         public boolean hasNext() {
-            for(Iterator<Node<T>> it : childrenIterators)
-                if (it.hasNext()) {
-                    return true;
-                }
-            return false;
+            return !childrenIterators.isEmpty();
         }
 
         @Override
         public Node<T> next() {
-            if(!currentIterator.hasNext()) {
-                childrenIterators.remove(currentIterator);
-                if(!childrenIterators.isEmpty()) {
-                    currentIterator = childrenIterators.peek();
-                } else {
-                    throw new NoSuchElementException();
-                }
+            if(!childrenIterators.isEmpty()) {
+                throw new NoSuchElementException();
             }
-            Node<T> node = currentIterator.next();
-            if (node.getChildren().hasNext()) {
+            Node<T> node = childrenIterators.peek().next();
+            if(!childrenIterators.peek().hasNext()) {
+                childrenIterators.pop();
+            }
+            if(node.getChildren().hasNext()) {
                 childrenIterators.push(node.getChildren());
             }
             return node;

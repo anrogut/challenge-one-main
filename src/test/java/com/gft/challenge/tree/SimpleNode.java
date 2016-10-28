@@ -1,6 +1,5 @@
 package com.gft.challenge.tree;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ final class SimpleNode<T> implements Node<T> {
         return childNode;
     }
 
-    @Contract(pure = true)
     @Override
     public T get() {
         return t;

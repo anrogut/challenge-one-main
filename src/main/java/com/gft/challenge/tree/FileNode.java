@@ -1,8 +1,6 @@
 package com.gft.challenge.tree;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,7 +14,6 @@ final class FileNode implements Node<File> {
         this.file = file;
     }
 
-    @Contract(pure = true)
     @Override
     public File get() {
         return file;

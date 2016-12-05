@@ -34,7 +34,7 @@ final class TreeDescendantsProvider {
 
         @Override
         public Node<T> next() {
-            if(!childrenIterators.isEmpty()) {
+            if(childrenIterators.isEmpty()) {
                 throw new NoSuchElementException();
             }
             Node<T> node = childrenIterators.peek().next();

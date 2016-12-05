@@ -1,8 +1,10 @@
 package com.gft.challenge.tree;
 
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -27,5 +29,14 @@ public class FileNodeTest {
         it.forEachRemaining((e) -> listOfPaths.add(e.get().getPath()));
 
         assertThat(listOfPaths).containsAll(correctPathList);
+    }
+
+    @Test
+    public void shouldContainExactlyTwoFiles() throws IOException {
+        TemporaryFolder tempFolder = new TemporaryFolder();
+        tempFolder.create();
+        tempFolder.newFolder("one", "two");
+
+        assertThat(TreeDescendantsProvider.getDescendants(new FileNode(tempFolder.getRoot()))).hasSize(2);
     }
 }

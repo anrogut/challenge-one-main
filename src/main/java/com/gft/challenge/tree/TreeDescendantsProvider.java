@@ -2,16 +2,15 @@ package com.gft.challenge.tree;
 
 import org.jetbrains.annotations.Contract;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Stack;
+import java.util.*;
 
-final class TreeDescendantsProvider {
+public final class TreeDescendantsProvider {
+
+    private TreeDescendantsProvider(){}
 
     @Contract("null -> !null; !null -> !null")
-    static <T> Iterator<Node<T>> getDescendants(Node<T> root) {
-        if(root == null) {
+    public static <T> Iterator<Node<T>> getDescendants(Node<T> root) {
+        if (root == null) {
             return Collections.emptyIterator();
         }
         return new TreeNodeIterator<>(root);
@@ -19,10 +18,10 @@ final class TreeDescendantsProvider {
 
     private static class TreeNodeIterator<T> implements Iterator<Node<T>> {
 
-        private Stack<Iterator<Node<T>>> childrenIterators = new Stack<>();
+        private Deque<Iterator<Node<T>>> childrenIterators = new LinkedList<>();
 
         TreeNodeIterator(Node<T> node) {
-            if(node.getChildren().hasNext()) {
+            if (node.getChildren().hasNext()) {
                 childrenIterators.push(node.getChildren());
             }
         }
@@ -34,14 +33,14 @@ final class TreeDescendantsProvider {
 
         @Override
         public Node<T> next() {
-            if(childrenIterators.isEmpty()) {
+            if (childrenIterators.isEmpty()) {
                 throw new NoSuchElementException();
             }
             Node<T> node = childrenIterators.peek().next();
-            if(!childrenIterators.peek().hasNext()) {
+            if (!childrenIterators.peek().hasNext()) {
                 childrenIterators.pop();
             }
-            if(node.getChildren().hasNext()) {
+            if (node.getChildren().hasNext()) {
                 childrenIterators.push(node.getChildren());
             }
             return node;

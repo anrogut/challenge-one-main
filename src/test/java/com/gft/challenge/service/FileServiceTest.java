@@ -24,7 +24,7 @@ public class FileServiceTest {
         String fileName = "test.txt";
         fileService.createFile(fileName);
 
-        assertThat(new File(tempFolder.getRoot().getAbsolutePath() + File.separator + fileName).exists());
+        assertThat(new File(tempFolder.getRoot().getAbsolutePath() + File.separator + fileName).exists()).isTrue();
         assertThat(tempFolder.getRoot().listFiles())
                 .contains(new File(tempFolder.getRoot().getAbsolutePath() + File.separator + fileName));
     }

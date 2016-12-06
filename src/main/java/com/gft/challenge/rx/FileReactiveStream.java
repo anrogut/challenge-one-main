@@ -11,7 +11,7 @@ final class FileReactiveStream {
     private final FileSystem fileSystem;
     private WatchService watchService;
 
-    public FileReactiveStream(FileSystem fileSystem) throws IOException {
+    FileReactiveStream(FileSystem fileSystem) throws IOException {
         this.fileSystem = fileSystem;
         init();
     }
@@ -21,7 +21,7 @@ final class FileReactiveStream {
     }
 
     // TODO: 12/6/2016 add recursive registering for all directories in given path
-    public Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
+    Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
         Path path1 = fileSystem.getPath(path);
         path1.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE);
 

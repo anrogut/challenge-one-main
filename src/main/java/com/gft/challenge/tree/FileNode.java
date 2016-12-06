@@ -10,7 +10,7 @@ public class FileNode implements Node<File> {
 
     private File file;
 
-    public FileNode(File file) {
+    FileNode(File file) {
         this.file = file;
     }
 

@@ -11,7 +11,7 @@ public class FileService {
 
     private String path = "";
 
-    public FileService(@Value("${observable.path}") String path) {
+    FileService(@Value("${observable.path}") String path) {
         this.path = path;
     }
 

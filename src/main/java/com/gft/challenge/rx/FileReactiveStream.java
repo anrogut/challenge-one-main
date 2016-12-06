@@ -1,21 +1,33 @@
 package com.gft.challenge.rx;
 
-import com.gft.challenge.tree.FileNode;
-import com.gft.challenge.tree.Node;
-import com.gft.challenge.tree.TreeDescendantsProvider;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
 
-@Component
 final class FileReactiveStream {
 
-    private FileReactiveStream(){}
+    private final FileSystem fileSystem;
+    private WatchService watchService;
 
-    @NotNull
-    static Observable<Node<File>> getObservableFileStream(FileNode fileNode) {
-        return Observable.from(() -> TreeDescendantsProvider.getDescendants(fileNode));
+    public FileReactiveStream(FileSystem fileSystem) throws IOException {
+        this.fileSystem = fileSystem;
+        init();
+    }
+
+    private void init() throws IOException {
+        watchService = fileSystem.newWatchService();
+    }
+
+    // TODO: 12/6/2016 add recursive registering for all directories in given path
+    public Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
+        Path path1 = fileSystem.getPath(path);
+        path1.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE);
+
+        return Observable.fromCallable(() -> {
+            WatchKey key = watchService.take();
+            return key.pollEvents();
+        }).flatMap(Observable::from).subscribeOn(Schedulers.io());
     }
 }

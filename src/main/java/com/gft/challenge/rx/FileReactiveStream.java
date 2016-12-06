@@ -27,6 +27,7 @@ final class FileReactiveStream {
 
         return Observable.fromCallable(() -> {
             WatchKey key = watchService.take();
+            key.reset();
             return key.pollEvents();
         }).flatMap(Observable::from).subscribeOn(Schedulers.io());
     }

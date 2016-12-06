@@ -25,7 +25,6 @@ public class FileReactiveStreamTest {
         Path home = fs.getPath("/home");
         Files.createDirectory(fs.getPath("/home"));
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fs);
-
         Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString());
         observable.subscribe(testSubscriber);
 

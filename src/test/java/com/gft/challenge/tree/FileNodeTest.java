@@ -1,5 +1,6 @@
 package com.gft.challenge.tree;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -15,6 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FileNodeTest {
 
     private static final String ROOT_PATH = "src";
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
     public void shouldContainCorrectFiles() {
@@ -33,8 +37,6 @@ public class FileNodeTest {
 
     @Test
     public void shouldContainExactlyTwoFiles() throws IOException {
-        TemporaryFolder tempFolder = new TemporaryFolder();
-        tempFolder.create();
         tempFolder.newFolder("one", "two");
 
         assertThat(TreeDescendantsProvider.getDescendants(new FileNode(tempFolder.getRoot()))).hasSize(2);

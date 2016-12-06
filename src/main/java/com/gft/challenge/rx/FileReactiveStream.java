@@ -10,9 +10,9 @@ import rx.Observable;
 import java.io.File;
 
 @Component
-class ReactiveTree {
+final class FileReactiveStream {
 
-    private ReactiveTree(){}
+    private FileReactiveStream(){}
 
     @NotNull
     static Observable<Node<File>> getObservableFileStream(FileNode fileNode) {

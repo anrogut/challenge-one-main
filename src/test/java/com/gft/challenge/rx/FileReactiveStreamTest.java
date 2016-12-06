@@ -10,7 +10,7 @@ import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ReactiveTreeTest {
+public class FileReactiveStreamTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -19,11 +19,11 @@ public class ReactiveTreeTest {
     public void shouldCreateReactiveStreamFromFileNode() {
         FileNode fileNode = new FileNode(new File(temporaryFolder.getRoot().getAbsolutePath()));
 
-        assertThat(ReactiveTree.getObservableFileStream(fileNode)).isInstanceOf(Observable.class);
+        assertThat(FileReactiveStream.getObservableFileStream(fileNode)).isInstanceOf(Observable.class);
     }
 
     @Test
     public void shouldCreateReactiveStreamEvenFromNullFileNode() {
-        assertThat(ReactiveTree.getObservableFileStream(null)).isInstanceOf(Observable.class);
+        assertThat(FileReactiveStream.getObservableFileStream(null)).isInstanceOf(Observable.class);
     }
 }

@@ -4,12 +4,12 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.*;
 
-final class TreeDescendantsProvider {
+public final class TreeDescendantsProvider {
 
     private TreeDescendantsProvider(){}
 
     @Contract("null -> !null; !null -> !null")
-    static <T> Iterator<Node<T>> getDescendants(Node<T> root) {
+    public static <T> Iterator<Node<T>> getDescendants(Node<T> root) {
         if (root == null) {
             return Collections.emptyIterator();
         }

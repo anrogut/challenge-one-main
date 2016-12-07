@@ -19,21 +19,23 @@ public class FileReactiveStreamTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
-    public void shouldCorrectlyGetCreateEventFromObservable() throws IOException {
+    public void shouldCorrectlyGetCreateEventFromNestedDirectoryObservable() throws IOException {
         ReplaySubject<WatchEvent<?>> testSubscriber = ReplaySubject.create();
         FileSystem fs = Jimfs.newFileSystem(Configuration.windows());
         Path home = fs.getPath("C:\\home");
-        Files.createDirectory(fs.getPath("C:\\home"));
+        Files.createDirectory(home);
+        Path temp = Files.createDirectory(fs.getPath("C:\\home\\test"));
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fs);
         Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString());
         observable.subscribe(testSubscriber);
 
-        Files.createFile(home.resolve("hello.txt"));
+        Files.createFile(temp.resolve("hello.txt"));
 
         WatchEvent<?> event = testSubscriber.toBlocking().first();
         assertThat(event).isNotNull();
         assertThat(event.kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
         assertThat(event.context().toString()).isEqualTo("hello.txt");
     }
+
 
 }

@@ -2,6 +2,7 @@ package com.gft.challenge.rx;
 
 import com.gft.challenge.tree.PathNode;
 import com.gft.challenge.tree.TreeDescendantsProvider;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -22,7 +23,7 @@ final class FileReactiveStream {
         watchService = fileSystem.newWatchService();
     }
 
-    Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
+    @NotNull Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
         Path rootPath = fileSystem.getPath(path);
         registerDirectory(rootPath);
 

@@ -25,7 +25,7 @@ public class FileReactiveStreamTest {
         Path home = fs.getPath("C:\\home");
         Files.createDirectory(fs.getPath("C:\\home"));
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fs);
-        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString(),true);
+        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString());
         observable.subscribe(testSubscriber);
 
         Files.createFile(home.resolve("hello.txt"));

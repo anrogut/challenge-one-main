@@ -22,21 +22,19 @@ final class FileReactiveStream {
         watchService = fileSystem.newWatchService();
     }
 
-    Observable<WatchEvent<?>> getEventStream(String path, boolean recursive) throws IOException {
+    Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
         Path rootPath = fileSystem.getPath(path);
         registerDirectory(rootPath);
 
-        if (recursive) {
-            TreeDescendantsProvider.getDescendants(new PathNode(rootPath)).forEachRemaining(pathNode -> {
-                if (Files.isDirectory(pathNode.get())) {
-                    try {
-                        registerDirectory(pathNode.get());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        TreeDescendantsProvider.getDescendants(new PathNode(rootPath)).forEachRemaining(pathNode -> {
+            if (Files.isDirectory(pathNode.get())) {
+                try {
+                    registerDirectory(pathNode.get());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
-        }
+            }
+        });
 
         return Observable.fromCallable(() -> {
             WatchKey key = watchService.take();

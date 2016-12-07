@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PathNode implements Node<Path> {
 
@@ -30,8 +31,8 @@ public class PathNode implements Node<Path> {
     @Override
     public Iterator<Node<Path>> getChildren() {
         List<Node<Path>> children = null;
-        try {
-            children = Files.walk(path, 1).map(PathNode::new).collect(Collectors.toList());
+        try (Stream<Path> stream = Files.walk(path,1)){
+            children = stream.map(PathNode::new).collect(Collectors.toList());
             // Children at least contains one path which is the root path. We need to remove it!
             children.remove(0);
         } catch (IOException e) {

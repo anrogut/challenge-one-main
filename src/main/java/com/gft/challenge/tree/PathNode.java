@@ -31,10 +31,8 @@ public class PathNode implements Node<Path> {
     @Override
     public Iterator<Node<Path>> getChildren() {
         List<Node<Path>> children = null;
-        try (Stream<Path> stream = Files.walk(path,1)){
+        try (Stream<Path> stream = Files.list(path)){
             children = stream.map(PathNode::new).collect(Collectors.toList());
-            // Children at least contains one path which is the root path. We need to remove it!
-            children.remove(0);
         } catch (IOException e) {
             LOG.warn(e.getMessage());
             LOG.trace("",e);

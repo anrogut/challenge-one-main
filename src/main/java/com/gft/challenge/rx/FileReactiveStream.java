@@ -8,6 +8,7 @@ import rx.schedulers.Schedulers;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.List;
 
 final class FileReactiveStream {
 
@@ -23,7 +24,8 @@ final class FileReactiveStream {
         watchService = fileSystem.newWatchService();
     }
 
-    @NotNull Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
+    @NotNull
+    Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
         Path rootPath = fileSystem.getPath(path);
         registerDirectory(rootPath);
 
@@ -40,8 +42,23 @@ final class FileReactiveStream {
         return Observable.fromCallable(() -> {
             WatchKey key = watchService.take();
             key.reset();
-            return key.pollEvents();
-        }).flatMap(Observable::from).subscribeOn(Schedulers.io()).repeat();
+            List<WatchEvent<?>> events = key.pollEvents();
+            events.forEach(watchEvent ->
+                registerNewDirectory(key,watchEvent));
+            key.watchable();
+            return events;
+        }).flatMap(Observable::from).subscribeOn(Schedulers.io());
+    }
+
+    private void registerNewDirectory(WatchKey key, WatchEvent<?> event) {
+        Path path1 = fileSystem.getPath(key.watchable().toString() + fileSystem.getSeparator() + event.context().toString());
+        if(Files.isDirectory(path1)) {
+            try {
+                registerDirectory(path1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void registerDirectory(Path path) throws IOException {

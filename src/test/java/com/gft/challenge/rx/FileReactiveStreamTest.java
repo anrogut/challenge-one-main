@@ -1,15 +1,24 @@
 package com.gft.challenge.rx;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import rx.Observable;
+import rx.Observer;
+import rx.observables.BlockingObservable;
+import rx.schedulers.Schedulers;
+import rx.subjects.AsyncSubject;
+import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +45,4 @@ public class FileReactiveStreamTest {
         assertThat(event.kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
         assertThat(event.context().toString()).isEqualTo("hello.txt");
     }
-
-
 }

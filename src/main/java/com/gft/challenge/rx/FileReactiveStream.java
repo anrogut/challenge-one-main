@@ -3,6 +3,8 @@ package com.gft.challenge.rx;
 import com.gft.challenge.tree.PathNode;
 import com.gft.challenge.tree.TreeDescendantsProvider;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -11,6 +13,8 @@ import java.nio.file.*;
 import java.util.List;
 
 final class FileReactiveStream {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FileReactiveStream.class);
 
     private final FileSystem fileSystem;
     private WatchService watchService;
@@ -34,7 +38,8 @@ final class FileReactiveStream {
                 try {
                     registerDirectory(pathNode.get());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOG.warn(e.getMessage());
+                    LOG.trace("",e);
                 }
             }
         });
@@ -56,7 +61,8 @@ final class FileReactiveStream {
             try {
                 registerDirectory(path1);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.warn(e.getMessage());
+                LOG.trace("",e);
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.gft.challenge.tree;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class PathNode implements Node<Path> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PathNode.class);
     private Path path;
 
     public PathNode(Path path) {
@@ -31,7 +35,8 @@ public class PathNode implements Node<Path> {
             // Children at least contains one path which is the root path. We need to remove it!
             children.remove(0);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn(e.getMessage());
+            LOG.trace("",e);
             return Collections.emptyIterator();
         }
         return children.iterator();

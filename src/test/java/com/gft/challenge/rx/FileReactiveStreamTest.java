@@ -2,9 +2,7 @@ package com.gft.challenge.rx;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import rx.Observable;
 import rx.subjects.ReplaySubject;
 
@@ -14,9 +12,6 @@ import java.nio.file.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileReactiveStreamTest {
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
     public void shouldCorrectlyGetCreateEventFromNestedDirectoryObservable() throws IOException {

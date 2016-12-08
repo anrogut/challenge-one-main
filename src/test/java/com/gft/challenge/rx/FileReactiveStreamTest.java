@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileReactiveStreamTest {
 
-    @Test
+    @Test(timeout = 10000)
     public void shouldCorrectlyGetCreateEventFromNestedDirectoryObservable() throws IOException {
         ReplaySubject<WatchEvent<?>> testSubscriber = ReplaySubject.create();
         FileSystem fs = Jimfs.newFileSystem(Configuration.windows());

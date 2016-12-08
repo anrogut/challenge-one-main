@@ -30,9 +30,9 @@ public class PathNode implements Node<Path> {
     @NotNull
     @Override
     public Iterator<Node<Path>> getChildren() {
-        List<Node<Path>> children = null;
+        List<Node<Path>> children;
         try (Stream<Path> stream = Files.list(path)){
-            children = stream.map(PathNode::new).collect(Collectors.toList());
+            children = stream.filter(Files::isDirectory).map(PathNode::new).collect(Collectors.toList());
         } catch (IOException e) {
             LOG.warn(e.getMessage());
             LOG.trace("",e);

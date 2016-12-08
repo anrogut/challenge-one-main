@@ -12,11 +12,12 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
 
-final class FileReactiveStream {
+final class FileReactiveStream implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileReactiveStream.class);
 
     private final FileSystem fileSystem;
+    private Observable<WatchEvent<?>> observable;
     private WatchService watchService;
 
     FileReactiveStream(FileSystem fileSystem) throws IOException {
@@ -43,16 +44,16 @@ final class FileReactiveStream {
                 }
             }
         });
-
-        return Observable.fromCallable(() -> {
+        observable = Observable.fromCallable(() -> {
             WatchKey key = watchService.take();
             key.reset();
             List<WatchEvent<?>> events = key.pollEvents();
             events.forEach(watchEvent ->
-                registerNewDirectory(key,watchEvent));
+                    registerNewDirectory(key,watchEvent));
             key.watchable();
             return events;
         }).flatMap(Observable::from).subscribeOn(Schedulers.io());
+        return observable;
     }
 
     private void registerNewDirectory(WatchKey key, WatchEvent<?> event) {
@@ -69,5 +70,15 @@ final class FileReactiveStream {
 
     private void registerDirectory(Path path) throws IOException {
         path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE);
+    }
+
+    @Override
+    public void close() throws Exception {
+        observable = null;
+        watchService.close();
+    }
+
+    public WatchService getWatchService() {
+        return watchService;
     }
 }

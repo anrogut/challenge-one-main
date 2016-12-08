@@ -8,6 +8,7 @@ import rx.observers.TestSubscriber;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,9 +19,9 @@ public class FileReactiveStreamTest {
     public void shouldCorrectlyGetCreateEventFromNestedDirectoryObservable() throws IOException {
         TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
         FileSystem fs = Jimfs.newFileSystem(Configuration.windows());
-        Path home = fs.getPath("C:\\home");
+        Path home = fs.getPath("C:/home");
         Files.createDirectory(home);
-        Path temp = Files.createDirectory(fs.getPath("C:\\home\\test"));
+        Path temp = Files.createDirectory(fs.getPath("C:/home/test"));
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fs);
         Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString());
         observable.subscribe(testSubscriber);
@@ -32,5 +33,26 @@ public class FileReactiveStreamTest {
         assertThat(event).isNotNull();
         assertThat(event.kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
         assertThat(event.context().toString()).isEqualTo("hello.txt");
+    }
+
+    @Test
+    public void shouldCorrectlyGetFileCreateEventFromNewlyCreatedDirectory() throws IOException, InterruptedException {
+        TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
+        FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
+        Path home = fs.getPath("/home");
+        Files.createDirectory(home);
+        FileReactiveStream fileReactiveStream = new FileReactiveStream(fs);
+        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString()).repeat(2);
+        observable.subscribe(testSubscriber);
+
+        Path test = Files.createDirectory(home.resolve("test"));
+        testSubscriber.awaitValueCount(1, 5, TimeUnit.SECONDS);
+        Files.createFile(test.resolve("temp.txt"));
+
+        testSubscriber.awaitValueCount(2, 5, TimeUnit.SECONDS);
+        List<WatchEvent<?>> events = testSubscriber.getOnNextEvents();
+        assertThat(events).hasSize(2);
+        assertThat(events.get(1).kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
+        assertThat(events.get(1).context().toString()).isEqualTo("temp.txt");
     }
 }

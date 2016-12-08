@@ -40,17 +40,16 @@ final class FileReactiveStream implements AutoCloseable {
                     registerDirectory(pathNode.get());
                 } catch (IOException e) {
                     LOG.warn(e.getMessage());
-                    LOG.trace("",e);
+                    LOG.trace("", e);
                 }
             }
         });
         observable = Observable.fromCallable(() -> {
             WatchKey key = watchService.take();
-            key.reset();
             List<WatchEvent<?>> events = key.pollEvents();
             events.forEach(watchEvent ->
-                    registerNewDirectory(key,watchEvent));
-            key.watchable();
+                    registerNewDirectory(key, watchEvent));
+            key.reset();
             return events;
         }).flatMap(Observable::from).subscribeOn(Schedulers.io());
         return observable;
@@ -58,12 +57,12 @@ final class FileReactiveStream implements AutoCloseable {
 
     private void registerNewDirectory(WatchKey key, WatchEvent<?> event) {
         Path path1 = fileSystem.getPath(key.watchable().toString() + fileSystem.getSeparator() + event.context().toString());
-        if(Files.isDirectory(path1)) {
+        if (Files.isDirectory(path1)) {
             try {
                 registerDirectory(path1);
             } catch (IOException e) {
                 LOG.warn(e.getMessage());
-                LOG.trace("",e);
+                LOG.trace("", e);
             }
         }
     }

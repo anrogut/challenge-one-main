@@ -28,9 +28,6 @@ public class FileReactiveStreamTest {
     private FileSystem fileSystem;
     private Path home;
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     @Before
     public void setUp() throws IOException {
         fileSystem = Jimfs.newFileSystem(Configuration.unix()

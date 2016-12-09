@@ -35,9 +35,8 @@ public class FileReactiveStreamTest {
     public void setUp() throws IOException {
         fileSystem = Jimfs.newFileSystem(Configuration.unix()
                 .toBuilder()
-                .setWatchServiceConfiguration(WatchServiceConfiguration.polling(10,TimeUnit.MILLISECONDS))
-                .build()
-        );
+                .setWatchServiceConfiguration(WatchServiceConfiguration.polling(10, TimeUnit.MILLISECONDS))
+                .build());
         home = fileSystem.getPath("/home");
         Files.createDirectory(home);
     }

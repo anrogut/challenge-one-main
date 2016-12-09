@@ -39,8 +39,7 @@ public class PathNode implements Node<Path> {
                 LOG.trace("",e);
                 return Collections.emptyIterator();
             }
-        } else {
-            return Collections.emptyIterator();
         }
+        return Collections.emptyIterator();
     }
 }

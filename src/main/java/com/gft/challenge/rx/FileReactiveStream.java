@@ -2,7 +2,6 @@ package com.gft.challenge.rx;
 
 import com.gft.challenge.tree.PathNode;
 import com.gft.challenge.tree.TreeDescendantsProvider;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -29,9 +28,9 @@ final class FileReactiveStream implements AutoCloseable {
         watchService = fileSystem.newWatchService();
     }
 
-    Observable<WatchEvent<?>> getEventStream(Path path) throws IllegalStateException {
+    Observable<WatchEvent<?>> getEventStream(Path path) throws IOException {
         if(!registerDirectory(path)) {
-            throw new IllegalStateException("Unable to register WatchService for root directory");
+            throw new IOException("Unable to register WatchService for root directory");
         }
 
         TreeDescendantsProvider.getDescendants(new PathNode(path)).forEachRemaining(pathNode -> {

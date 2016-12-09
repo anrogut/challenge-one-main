@@ -42,10 +42,11 @@ public class FileReactiveStreamTest {
         fileSystem.close();
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void shouldCorrectlyGetCreateEventFromNestedDirectoryObservable() throws IOException {
         TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
         Path temp = Files.createDirectory(fileSystem.getPath("/home/test"));
+        Files.createFile(fileSystem.getPath("/home/file.txt"));
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
         Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
@@ -53,6 +54,7 @@ public class FileReactiveStreamTest {
         Files.createFile(temp.resolve("hello.txt"));
         testSubscriber.awaitValueCount(1, 5, TimeUnit.SECONDS);
 
+        testSubscriber.assertValueCount(1);
         WatchEvent<?> event = testSubscriber.getOnNextEvents().get(0);
         assertThat(event).isNotNull();
         assertThat(event.kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
@@ -115,7 +117,7 @@ public class FileReactiveStreamTest {
 
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
 
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> fileReactiveStream.getEventStream(home));
+        assertThatExceptionOfType(IOException.class).isThrownBy(() -> fileReactiveStream.getEventStream(home));
     }
 
 }

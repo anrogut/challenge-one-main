@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FileReactiveStreamTest {
 
@@ -42,7 +47,7 @@ public class FileReactiveStreamTest {
         TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
         Path temp = Files.createDirectory(fileSystem.getPath("/home/test"));
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString());
+        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
 
         Files.createFile(temp.resolve("hello.txt"));
@@ -58,7 +63,7 @@ public class FileReactiveStreamTest {
     public void shouldCorrectlyGetFileCreateEventFromNewlyCreatedDirectory() throws IOException, InterruptedException {
         TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home.toString()).repeat(2);
+        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home).repeat(2);
         observable.subscribe(testSubscriber);
 
         Path test = Files.createDirectory(home.resolve("test"));
@@ -79,7 +84,7 @@ public class FileReactiveStreamTest {
         TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
         FileSystem fs = FileSystems.getDefault();
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fs);
-        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(temporaryFolder.getRoot().getAbsolutePath()).repeat(2);
+        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(temporaryFolder.getRoot().toPath()).repeat(2);
         observable.subscribe(testSubscriber);
 
         Path test = temporaryFolder.newFolder("test").toPath();
@@ -92,4 +97,25 @@ public class FileReactiveStreamTest {
         assertThat(events.get(1).kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
         assertThat(events.get(1).context().toString()).isEqualTo("temp.txt");
     }
+
+    @Test
+    public void shouldCloseCorrectly() throws Exception {
+        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
+        fileReactiveStream.close();
+
+        assertThatExceptionOfType(ClosedWatchServiceException.class)
+                .isThrownBy(() -> fileReactiveStream.getWatchService().take());
+    }
+
+    @Test
+    public void shouldThrowIllegalStateExceptionWhenCannotRegisterWatchServiceForRootPath() throws IOException {
+        Path home = mock(Path.class);
+        when(home.register(any(WatchService.class), eq(StandardWatchEventKinds.ENTRY_CREATE), eq(StandardWatchEventKinds.ENTRY_DELETE)))
+                .thenThrow(new IOException());
+
+        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
+
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> fileReactiveStream.getEventStream(home));
+    }
+
 }

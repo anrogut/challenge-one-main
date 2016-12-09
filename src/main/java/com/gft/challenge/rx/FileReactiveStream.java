@@ -29,18 +29,14 @@ final class FileReactiveStream implements AutoCloseable {
         watchService = fileSystem.newWatchService();
     }
 
-    Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
-        Path rootPath = fileSystem.getPath(path);
-        registerDirectory(rootPath);
+    Observable<WatchEvent<?>> getEventStream(Path path) throws IllegalStateException {
+        if(!registerDirectory(path)) {
+            throw new IllegalStateException("Unable to register WatchService for root directory");
+        }
 
-        TreeDescendantsProvider.getDescendants(new PathNode(rootPath)).forEachRemaining(pathNode -> {
+        TreeDescendantsProvider.getDescendants(new PathNode(path)).forEachRemaining(pathNode -> {
             if (Files.isDirectory(pathNode.get())) {
-                try {
-                    registerDirectory(pathNode.get());
-                } catch (IOException e) {
-                    LOG.warn(e.getMessage());
-                    LOG.trace("", e);
-                }
+                registerDirectory(pathNode.get());
             }
         });
 
@@ -58,22 +54,28 @@ final class FileReactiveStream implements AutoCloseable {
     private void registerNewDirectory(WatchKey key, WatchEvent<?> event) {
         Path path1 = fileSystem.getPath(key.watchable().toString() + fileSystem.getSeparator() + event.context().toString());
         if (Files.isDirectory(path1)) {
-            try {
-                registerDirectory(path1);
-            } catch (IOException e) {
-                LOG.warn(e.getMessage());
-                LOG.trace("", e);
-            }
+            registerDirectory(path1);
         }
     }
 
-    private void registerDirectory(Path path) throws IOException {
-        path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE);
+    private boolean registerDirectory(Path path) {
+        try {
+            path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE);
+            return true;
+        } catch (IOException e) {
+            LOG.warn("Unable to register WatchService for directory: {},", e.getMessage());
+            LOG.trace("", e);
+            return false;
+        }
     }
 
     @Override
     public void close() throws Exception {
         observable = null;
         watchService.close();
+    }
+
+    WatchService getWatchService() {
+        return watchService;
     }
 }

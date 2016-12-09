@@ -4,13 +4,14 @@ import rx.Observer;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 
 public class FileEventStreamObserver {
 
     public void observe() throws IOException {
         FileReactiveStream fileReactiveStream = new FileReactiveStream(FileSystems.getDefault());
-        fileReactiveStream.getEventStream("C:\\Temp").repeat().toBlocking().subscribe(new Observer<WatchEvent<?>>() {
+        fileReactiveStream.getEventStream(Paths.get("C:\\Temp")).repeat().toBlocking().subscribe(new Observer<WatchEvent<?>>() {
             @Override
             public void onCompleted() {
                 System.out.println("done");

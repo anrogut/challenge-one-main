@@ -96,7 +96,7 @@ public class FileReactiveStreamTest {
     }
 
     @Test
-    public void shouldThrowIllegalStateExceptionWhenCannotRegisterWatchServiceForRootPath() throws IOException {
+    public void shouldThrowIOExceptionWhenCannotRegisterWatchServiceForRootPath() throws IOException {
         Path home = mock(Path.class);
         when(home.register(any(WatchService.class), eq(StandardWatchEventKinds.ENTRY_CREATE), eq(StandardWatchEventKinds.ENTRY_DELETE)))
                 .thenThrow(new IOException());

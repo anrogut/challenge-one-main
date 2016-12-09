@@ -29,7 +29,6 @@ final class FileReactiveStream implements AutoCloseable {
         watchService = fileSystem.newWatchService();
     }
 
-    @NotNull
     Observable<WatchEvent<?>> getEventStream(String path) throws IOException {
         Path rootPath = fileSystem.getPath(path);
         registerDirectory(rootPath);
@@ -44,6 +43,7 @@ final class FileReactiveStream implements AutoCloseable {
                 }
             }
         });
+
         observable = Observable.fromCallable(() -> {
             WatchKey key = watchService.take();
             List<WatchEvent<?>> events = key.pollEvents();
@@ -75,9 +75,5 @@ final class FileReactiveStream implements AutoCloseable {
     public void close() throws Exception {
         observable = null;
         watchService.close();
-    }
-
-    public WatchService getWatchService() {
-        return watchService;
     }
 }

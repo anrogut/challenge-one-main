@@ -5,9 +5,7 @@ import com.google.common.jimfs.Jimfs;
 import com.google.common.jimfs.WatchServiceConfiguration;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
@@ -53,7 +51,7 @@ public class FileReactiveStreamTest {
         observable.subscribe(testSubscriber);
 
         Files.createFile(temp.resolve("hello.txt"));
-        testSubscriber.awaitValueCount(1, 5, TimeUnit.SECONDS);
+        testSubscriber.awaitValueCount(1, 5000, TimeUnit.MILLISECONDS);
 
         testSubscriber.assertValueCount(1);
         WatchEvent<?> event = testSubscriber.getOnNextEvents().get(0);
@@ -70,10 +68,10 @@ public class FileReactiveStreamTest {
         observable.subscribe(testSubscriber);
 
         Path test = Files.createDirectory(home.resolve("test"));
-        testSubscriber.awaitValueCount(1, 5, TimeUnit.SECONDS);
+        testSubscriber.awaitValueCount(1, 5000, TimeUnit.MILLISECONDS);
         testSubscriber.assertValueCount(1);
         Files.createFile(test.resolve("temp.txt"));
-        testSubscriber.awaitValueCount(2, 5, TimeUnit.SECONDS);
+        testSubscriber.awaitValueCount(2, 5000, TimeUnit.MILLISECONDS);
 
         testSubscriber.assertNoErrors();
         testSubscriber.assertValueCount(2);

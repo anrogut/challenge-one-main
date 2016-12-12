@@ -62,7 +62,7 @@ final class FileReactiveStream implements AutoCloseable {
             path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE);
             return true;
         } catch (IOException e) {
-            LOG.warn("Unable to register WatchService for directory: {},", e.getMessage());
+            LOG.warn("Unable to register WatchService for directory: {}", e.getMessage());
             LOG.trace("", e);
             return false;
         }

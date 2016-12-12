@@ -11,7 +11,7 @@ public class FileEventStreamObserver {
 
     public void observe() throws IOException {
         FileReactiveStream fileReactiveStream = new FileReactiveStream(FileSystems.getDefault());
-        fileReactiveStream.getEventStream(Paths.get("C:\\Temp")).repeat().toBlocking().subscribe(new Observer<WatchEvent<?>>() {
+        fileReactiveStream.getEventStream(Paths.get("C:\\Temp")).toBlocking().subscribe(new Observer<WatchEvent<?>>() {
             @Override
             public void onCompleted() {
                 System.out.println("done");

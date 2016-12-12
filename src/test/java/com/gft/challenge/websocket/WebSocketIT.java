@@ -1,6 +1,11 @@
 package com.gft.challenge.websocket;
 
 import com.gft.challenge.ChallengeOneMainApplication;
+import com.gft.challenge.rx.FileReactiveStream;
+import com.gft.challenge.rx.FileReactiveStreamObserver;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
+import com.google.common.jimfs.WatchServiceConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +21,15 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
+import rx.Observable;
+import rx.observers.TestSubscriber;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
 import java.util.Collections;
 import java.util.concurrent.*;
 
@@ -35,7 +47,7 @@ public class WebSocketIT {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Test
-    public void shouldSendWebSocketMessage() throws InterruptedException, ExecutionException, TimeoutException {
+    public void shouldSendWebSocketMessage() throws Exception {
         WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
                 Collections.singletonList(new WebSocketTransport((new StandardWebSocketClient()))))
         );
@@ -44,10 +56,21 @@ public class WebSocketIT {
                 new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {}).get(1, TimeUnit.SECONDS);
 
         session.subscribe(TOPIC, new DefaultStompFrameHandler());
-        Thread.sleep(1000);
-        simpMessagingTemplate.convertAndSend(TOPIC, "siema");
+        Thread.sleep(100);
 
-        assertThat(messages.poll(1, TimeUnit.SECONDS)).isEqualTo("siema");
+        FileSystem  fileSystem = Jimfs.newFileSystem(Configuration.unix()
+                .toBuilder()
+                .setWatchServiceConfiguration(WatchServiceConfiguration.polling(10, TimeUnit.MILLISECONDS))
+                .build());
+        Path home = fileSystem.getPath("/home");
+        Files.createDirectory(home);
+        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
+        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home);
+        observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
+
+        Files.createDirectory(fileSystem.getPath("/home/test"));
+
+        assertThat(messages.poll(5, TimeUnit.SECONDS)).isEqualTo("ENTRY_CREATE | test");
     }
 
     class DefaultStompFrameHandler implements StompFrameHandler {

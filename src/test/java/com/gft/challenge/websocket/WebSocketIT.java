@@ -6,6 +6,7 @@ import com.gft.challenge.rx.FileReactiveStreamObserver;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import com.google.common.jimfs.WatchServiceConfiguration;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,16 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import rx.Observable;
-import rx.observers.TestSubscriber;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.util.Collections;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,19 +47,22 @@ public class WebSocketIT {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Test
-    public void shouldSendWebSocketMessage() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
                 Collections.singletonList(new WebSocketTransport((new StandardWebSocketClient()))))
         );
 
         StompSession session = stompClient.connect(STOMP_URL,
-                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {}).get(1, TimeUnit.SECONDS);
+                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {
+                }).get(1, TimeUnit.SECONDS);
 
         session.subscribe(TOPIC, new DefaultStompFrameHandler());
-        Thread.sleep(100);
+    }
 
-        FileSystem  fileSystem = Jimfs.newFileSystem(Configuration.unix()
+    @Test
+    public void shouldSendWebSocketMessage() throws Exception {
+        FileSystem fileSystem = Jimfs.newFileSystem(Configuration.unix()
                 .toBuilder()
                 .setWatchServiceConfiguration(WatchServiceConfiguration.polling(10, TimeUnit.MILLISECONDS))
                 .build());
@@ -71,6 +75,13 @@ public class WebSocketIT {
         Files.createDirectory(fileSystem.getPath("/home/test"));
 
         assertThat(messages.poll(5, TimeUnit.SECONDS)).isEqualTo("ENTRY_CREATE | test");
+    }
+
+    @Test
+    public void shouldSendErrorInformationMessage() throws InterruptedException {
+        Observable<WatchEvent<?>> observable = Observable.error(new Exception("Exception"));
+        observable.toBlocking().subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
+        assertThat(messages.poll(5, TimeUnit.SECONDS)).isEqualTo("Exception");
     }
 
     class DefaultStompFrameHandler implements StompFrameHandler {

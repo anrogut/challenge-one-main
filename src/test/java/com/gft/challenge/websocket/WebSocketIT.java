@@ -83,7 +83,7 @@ public class WebSocketIT {
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
         awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
 
-        assertThat(messages.poll(5, TimeUnit.SECONDS)).isEqualTo("Exception");
+        assertThat(messages.poll()).isEqualTo("Exception");
     }
 
     @Test

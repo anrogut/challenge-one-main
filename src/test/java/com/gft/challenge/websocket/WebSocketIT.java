@@ -74,38 +74,24 @@ public class WebSocketIT {
 
         Files.createDirectory(fileSystem.getPath("/home/test"));
 
-        assertThat(messages.poll(5, TimeUnit.SECONDS)).isEqualTo("ENTRY_CREATE | test");
+        assertThat(messages.poll(5000, TimeUnit.MILLISECONDS)).isEqualTo("ENTRY_CREATE | test");
     }
 
     @Test
     public void shouldSendErrorInformationMessage() throws InterruptedException {
         Observable<WatchEvent<?>> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
-        awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
 
-        assertThat(messages.poll()).isEqualTo("Exception");
+        assertThat(messages.poll(5000, TimeUnit.MILLISECONDS)).isEqualTo("Exception");
     }
 
     @Test
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
         Observable<WatchEvent<?>> observable = Observable.defer(() -> Observable.just(new TestWatchEvent()));
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
-        awaitMessagesCount(2, 5000, TimeUnit.MILLISECONDS);
-        messages.poll();
+        messages.poll(5000, TimeUnit.MILLISECONDS);
 
-        assertThat(messages.poll()).isEqualTo("done");
-    }
-
-    public final boolean awaitMessagesCount(int expected, long timeout, TimeUnit unit) {
-        while (timeout != 0 && messages.size() < expected) {
-            try {
-                unit.sleep(1);
-            } catch (InterruptedException e) {
-                throw new IllegalStateException("Interrupted", e);
-            }
-            timeout--;
-        }
-        return messages.size() >= expected;
+        assertThat(messages.poll(5000, TimeUnit.MILLISECONDS)).isEqualTo("done");
     }
 
     class DefaultStompFrameHandler implements StompFrameHandler {

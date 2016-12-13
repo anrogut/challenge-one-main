@@ -4,7 +4,7 @@ jdk:
 
 sudo: false
 
-script: "mvn cobertura:cobertura"
+script: "mvn cobertura:cobertura-integration-test"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -t b4a080af-5c91-4cba-b5fe-f1ab4c05832f

@@ -79,8 +79,8 @@ public class WebSocketIT {
 
     @Test
     public void shouldSendErrorInformationMessage() throws InterruptedException {
-        Observable<WatchEvent<?>> observable = Observable.error(new Exception("Exception"));
-        observable.toBlocking().subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
+        Observable<WatchEvent<?>> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
+        observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
         awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
 
         assertThat(messages.poll(5, TimeUnit.SECONDS)).isEqualTo("Exception");

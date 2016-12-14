@@ -2,4 +2,4 @@ server:
   port: 8080
 
 observable:
-  path: "C:\\Users\\anrt\\AppData\\Local\\Temp"
+  path: "C:\\Temp"

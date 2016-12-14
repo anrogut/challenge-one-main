@@ -1,23 +1,23 @@
 var stompClient = null;
 
 window.onload = function() {
-    $("#eventList").hide();
+    $('#eventList').hide();
 }
 
 function setConnected(connected) {
-    $("#connect").prop("disabled", connected);
-    $("#disconnect").prop("disabled", !connected);
+    $('#connect').prop('disabled', connected);
+    $('#disconnect').prop('disabled', !connected);
     if (connected) {
-        $("#eventList").show();
+        $('#eventList').show();
     }
     else {
-        $("#eventList").hide();
+        $('#eventList').hide();
     }
-    $("#events").html("");
+    $('#events').html('');
 }
 
 function connect() {
-    $.get("/connect", undefined, function() {
+    $.get('/connect', undefined, function() {
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
@@ -33,7 +33,8 @@ function connect() {
 function addEvent(event) {
     var eventObj = JSON.parse(event);
     var labelClass = eventObj.eventType === 'ENTRY_CREATE' ? 'label-success' : 'label-danger';
-    $("#events").append('<tr><td><span class="label ' + labelClass + '">' + eventObj.eventType + '</span></td><td>' + eventObj.absolutePath + '</td></tr>');
+    $('#events').append('<tr><td><span class="label ' +labelClass + '">' + eventObj.eventType + '</span></td>' +
+                        '<td>' + eventObj.absolutePath + '</td></tr>');
 }
 
 function disconnect() {
@@ -41,13 +42,13 @@ function disconnect() {
         stompClient.disconnect();
     }
     setConnected(false);
-    console.log("Disconnected");
+    console.log('Disconnected');
 }
 
 $(function () {
-    $("form").on('submit', function (e) {
+    $('form').on('submit', function (e) {
         e.preventDefault();
     });
-    $("#connect").click(function() { connect(); });
-    $("#disconnect").click(function() { disconnect(); });
+    $('#connect').click(function() { connect(); });
+    $('#disconnect').click(function() { disconnect(); });
 });

@@ -11,13 +11,14 @@ import rx.schedulers.Schedulers;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class FileReactiveStream implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileReactiveStream.class);
 
     private final FileSystem fileSystem;
-    private Observable<WatchEvent<?>> observable;
+    private Observable<FileEvent> observable;
     private WatchService watchService;
 
     public FileReactiveStream(FileSystem fileSystem) throws IOException {
@@ -29,7 +30,7 @@ public final class FileReactiveStream implements AutoCloseable {
         watchService = fileSystem.newWatchService();
     }
 
-    public Observable<WatchEvent<?>> getEventStream(@NotNull Path path) throws IOException {
+    public Observable<FileEvent> getEventStream(@NotNull Path path) throws IOException {
         if(!registerDirectory(path)) {
             throw new IOException("Unable to register WatchService for root directory");
         }
@@ -45,8 +46,10 @@ public final class FileReactiveStream implements AutoCloseable {
             List<WatchEvent<?>> events = key.pollEvents();
             events.forEach(watchEvent ->
                     registerNewDirectory(key, watchEvent));
+            List<FileEvent> fileEvents = events.stream()
+                    .map(e -> FileEvent.from(e,key.watchable().toString(),fileSystem)).collect(Collectors.toList());
             key.reset();
-            return events;
+            return fileEvents;
         }).flatMap(Observable::from).subscribeOn(Schedulers.io()).repeat();
         return observable;
     }

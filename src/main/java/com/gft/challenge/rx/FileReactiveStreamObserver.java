@@ -5,7 +5,7 @@ import rx.Observer;
 
 import java.nio.file.WatchEvent;
 
-public class FileReactiveStreamObserver implements Observer<WatchEvent<?>> {
+public class FileReactiveStreamObserver implements Observer<FileEvent> {
 
     private static final String TOPIC_EVENT = "/topic/event";
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -25,7 +25,7 @@ public class FileReactiveStreamObserver implements Observer<WatchEvent<?>> {
     }
 
     @Override
-    public void onNext(WatchEvent<?> event) {
-        simpMessagingTemplate.convertAndSend(TOPIC_EVENT, event.kind().toString() + " | " + event.context());
+    public void onNext(FileEvent event) {
+        simpMessagingTemplate.convertAndSend(TOPIC_EVENT, event);
     }
 }

@@ -1,6 +1,8 @@
 package com.gft.challenge.websocket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gft.challenge.ChallengeOneMainApplication;
+import com.gft.challenge.rx.FileEvent;
 import com.gft.challenge.rx.FileReactiveStream;
 import com.gft.challenge.rx.FileReactiveStreamObserver;
 import com.google.common.jimfs.Configuration;
@@ -28,7 +30,6 @@ import java.lang.reflect.Type;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.WatchEvent;
 import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -71,17 +72,20 @@ public class WebSocketIT {
         Path home = fileSystem.getPath("/home");
         Files.createDirectory(home);
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home);
+        Observable<FileEvent> observable = fileReactiveStream.getEventStream(home);
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
 
         Files.createDirectory(fileSystem.getPath("/home/test"));
+        ObjectMapper objectMapper = new ObjectMapper();
+        FileEvent fe = objectMapper.readValue(messages.poll(5000, TimeUnit.MILLISECONDS), FileEvent.class);
 
-        assertThat(messages.poll(5000, TimeUnit.MILLISECONDS)).isEqualTo("ENTRY_CREATE | test");
+        assertThat(fe.getEventType()).isEqualTo("ENTRY_CREATE");
+        assertThat(fe.getAbsolutePath()).isEqualTo("/home/test");
     }
 
     @Test
     public void shouldSendErrorInformationMessage() throws InterruptedException {
-        Observable<WatchEvent<?>> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
+        Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
         awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
 
@@ -90,7 +94,7 @@ public class WebSocketIT {
 
     @Test
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
-        Observable<WatchEvent<?>> observable = Observable.defer(() -> Observable.just(new TestWatchEvent()));
+        Observable<FileEvent> observable = Observable.defer(() -> Observable.just(new FileEvent()));
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
         awaitMessagesCount(2, 5000, TimeUnit.MILLISECONDS);
         messages.poll(5000, TimeUnit.MILLISECONDS);

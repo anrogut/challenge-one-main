@@ -43,28 +43,28 @@ public class FileReactiveStreamTest {
 
     @Test
     public void shouldCorrectlyGetCreateEventFromNestedDirectoryObservable() throws IOException {
-        TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
+        TestSubscriber<FileEvent> testSubscriber = TestSubscriber.create();
         Path temp = Files.createDirectory(fileSystem.getPath("/home/test"));
         Files.createFile(fileSystem.getPath("/home/file.txt"));
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home);
+        Observable<FileEvent> observable = fileReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
 
         Files.createFile(temp.resolve("hello.txt"));
         testSubscriber.awaitValueCount(1, 5000, TimeUnit.MILLISECONDS);
 
         testSubscriber.assertValueCount(1);
-        WatchEvent<?> event = testSubscriber.getOnNextEvents().get(0);
+        FileEvent event = testSubscriber.getOnNextEvents().get(0);
         assertThat(event).isNotNull();
-        assertThat(event.kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
-        assertThat(event.context().toString()).isEqualTo("hello.txt");
+        assertThat(event.getEventType()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
+        assertThat(event.getAbsolutePath()).isEqualTo("/home/test/hello.txt");
     }
 
     @Test
     public void shouldCorrectlyGetFileCreateEventFromNewlyCreatedDirectory() throws IOException, InterruptedException {
-        TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
+        TestSubscriber<FileEvent> testSubscriber = TestSubscriber.create();
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home);
+        Observable<FileEvent> observable = fileReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
 
         Path test = Files.createDirectory(home.resolve("test"));
@@ -75,9 +75,9 @@ public class FileReactiveStreamTest {
 
         testSubscriber.assertNoErrors();
         testSubscriber.assertValueCount(2);
-        List<WatchEvent<?>> events = testSubscriber.getOnNextEvents();
-        assertThat(events.get(1).kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
-        assertThat(events.get(1).context().toString()).isEqualTo("temp.txt");
+        List<FileEvent> events = testSubscriber.getOnNextEvents();
+        assertThat(events.get(1).getEventType()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
+        assertThat(events.get(1).getAbsolutePath()).isEqualTo("/home/test/temp.txt");
     }
 
     @Test

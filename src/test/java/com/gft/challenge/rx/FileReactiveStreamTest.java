@@ -61,7 +61,7 @@ public class FileReactiveStreamTest {
     }
 
     @Test
-    public void  shouldCorrectlyGetFileCreateEventFromNewlyCreatedDirectory() throws IOException, InterruptedException {
+    public void shouldCorrectlyGetFileCreateEventFromNewlyCreatedDirectory() throws IOException, InterruptedException {
         TestSubscriber<WatchEvent<?>> testSubscriber = TestSubscriber.create();
         FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
         Observable<WatchEvent<?>> observable = fileReactiveStream.getEventStream(home);

@@ -19,7 +19,7 @@ public class FileServiceTest {
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
-    public void shouldCreateFileWithGivenName() throws IOException{
+    public void shouldCreateFileWithGivenName() throws IOException {
         FileService fileService = new FileService(tempFolder.getRoot().getAbsolutePath());
         String fileName = "test.txt";
         fileService.createFile(fileName);
@@ -29,8 +29,8 @@ public class FileServiceTest {
                 .contains(new File(tempFolder.getRoot().getAbsolutePath() + File.separator + fileName));
     }
 
-    @Test (expected = IOException.class)
-    public void shouldThrowIOException() throws IOException{
+    @Test(expected = IOException.class)
+    public void shouldThrowIOException() throws IOException {
         FileService fileService = mock(FileService.class);
 
         when(fileService.createFile(any())).thenThrow(new IOException());

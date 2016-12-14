@@ -12,7 +12,7 @@ final class SimpleNode<T> implements Node<T> {
     private List<Node<T>> children;
 
     SimpleNode(T t) {
-        this (t, new ArrayList<>());
+        this(t, new ArrayList<>());
     }
 
     SimpleNode(T t, List<Node<T>> children) {

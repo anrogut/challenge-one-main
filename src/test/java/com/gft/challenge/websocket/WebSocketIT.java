@@ -44,8 +44,6 @@ public class WebSocketIT {
 
     private BlockingQueue<String> messages = new LinkedBlockingQueue<>();
 
-    StompSession session;
-
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -55,8 +53,9 @@ public class WebSocketIT {
                 Collections.singletonList(new WebSocketTransport((new StandardWebSocketClient()))))
         );
 
-        session = stompClient.connect(STOMP_URL,
-                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {}).get(1, TimeUnit.SECONDS);
+        StompSession session = stompClient.connect(STOMP_URL,
+                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {
+                }).get(2, TimeUnit.SECONDS);
 
         session.subscribe(TOPIC, new DefaultStompFrameHandler());
         Thread.sleep(100);
@@ -83,7 +82,7 @@ public class WebSocketIT {
     public void shouldSendErrorInformationMessage() throws InterruptedException {
         Observable<WatchEvent<?>> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
-        awaitMessagesCount(1,5000,TimeUnit.MILLISECONDS);
+        awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
 
         assertThat(messages.poll()).isEqualTo("Exception");
     }
@@ -92,7 +91,7 @@ public class WebSocketIT {
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
         Observable<WatchEvent<?>> observable = Observable.defer(() -> Observable.just(new TestWatchEvent()));
         observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
-        awaitMessagesCount(2,5000,TimeUnit.MILLISECONDS);
+        awaitMessagesCount(2, 5000, TimeUnit.MILLISECONDS);
         messages.poll(5000, TimeUnit.MILLISECONDS);
 
         assertThat(messages.poll()).isEqualTo("done");

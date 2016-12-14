@@ -1,6 +1,6 @@
 package com.gft.challenge.rest;
 
-import com.gft.challenge.service.FileService;
+import com.gft.challenge.service.ObserverService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,34 +13,32 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class FileControllerIT {
+public class ObserverControllerIT {
 
     @Mock
-    private FileService fileService;
+    private ObserverService observerService;
 
     @InjectMocks
-    private FileController fileController;
+    private ObserverController observerController;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws IOException {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(fileController).build();
-    }
-
-    @Test
-    public void shouldReturn400WhenFileNameNotGiven() throws Exception {
-        mockMvc.perform(get("/addFile")).andExpect(status().isBadRequest());
-        mockMvc.perform(get("/addFile?name")).andExpect(status().isBadRequest());
+        this.mockMvc = MockMvcBuilders.standaloneSetup(observerController).build();
     }
 
     @Test
     public void shouldReturn200OK() throws Exception {
-        mockMvc.perform(get("/addFile?name=3.txt")).andExpect(status().isOk());
+        mockMvc.perform(get("/connect")).andExpect(status().isOk());
+        verify(observerService, times(1)).observeDirectory(anyString());
     }
 }

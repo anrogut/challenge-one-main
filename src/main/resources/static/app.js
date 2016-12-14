@@ -1,13 +1,17 @@
 var stompClient = null;
 
+window.onload = function() {
+    $("#eventList").hide();
+}
+
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
     if (connected) {
-        $("#conversation").show();
+        $("#eventList").show();
     }
     else {
-        $("#conversation").hide();
+        $("#eventList").hide();
     }
     $("#events").html("");
 }
@@ -27,7 +31,9 @@ function connect() {
 }
 
 function addEvent(event) {
-    $("#events").append("<tr><td>" + event + "</td></tr>");
+    var eventObj = JSON.parse(event);
+    var labelClass = eventObj.eventType === 'ENTRY_CREATE' ? 'label-success' : 'label-danger';
+    $("#events").append('<tr><td><span class="label ' + labelClass + '">' + eventObj.eventType + '</span></td><td>' + eventObj.absolutePath + '</td></tr>');
 }
 
 function disconnect() {

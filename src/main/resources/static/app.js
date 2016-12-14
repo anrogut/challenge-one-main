@@ -9,7 +9,7 @@ function setConnected(connected) {
     else {
         $("#conversation").hide();
     }
-    $("#greetings").html("");
+    $("#events").html("");
 }
 
 function connect() {
@@ -27,7 +27,6 @@ function connect() {
 }
 
 function addEvent(event) {
-    console.log(event);
     $("#events").append("<tr><td>" + event + "</td></tr>");
 }
 

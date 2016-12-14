@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FileControllerIT {
 
     @Mock
-    private FileService fileService;
+    private FileService  fileService;
 
     @InjectMocks
     private FileController fileController;
@@ -40,7 +40,7 @@ public class FileControllerIT {
     }
 
     @Test
-    public void shouldReturn200OK() throws Exception{
+    public void shouldReturn200OK() throws Exception {
         mockMvc.perform(get("/addFile?name=3.txt")).andExpect(status().isOk());
     }
 }

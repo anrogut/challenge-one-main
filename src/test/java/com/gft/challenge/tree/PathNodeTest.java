@@ -21,6 +21,7 @@ public class PathNodeTest {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
+    @Test
     public void shouldContainCorrectFiles() {
         Node<Path> root = new PathNode(Paths.get(ROOT_PATH));
         Iterator<Node<Path>> it = TreeDescendantsProvider.getDescendants(root);

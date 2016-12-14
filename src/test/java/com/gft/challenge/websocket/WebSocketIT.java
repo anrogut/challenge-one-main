@@ -58,6 +58,7 @@ public class WebSocketIT {
                 }).get(2, TimeUnit.SECONDS);
 
         session.subscribe(TOPIC, new DefaultStompFrameHandler());
+
         Thread.sleep(100);
     }
 

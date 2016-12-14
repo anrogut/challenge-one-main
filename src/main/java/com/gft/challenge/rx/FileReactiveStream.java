@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
 
-final public class FileReactiveStream implements AutoCloseable {
+public final class FileReactiveStream implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileReactiveStream.class);
 

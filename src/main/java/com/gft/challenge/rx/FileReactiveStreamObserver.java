@@ -7,6 +7,7 @@ import java.nio.file.WatchEvent;
 
 public class FileReactiveStreamObserver implements Observer<WatchEvent<?>> {
 
+    private static final String TOPIC_EVENT = "/topic/event";
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public FileReactiveStreamObserver(SimpMessagingTemplate simpMessagingTemplate) {
@@ -15,16 +16,16 @@ public class FileReactiveStreamObserver implements Observer<WatchEvent<?>> {
 
     @Override
     public void onCompleted() {
-        simpMessagingTemplate.convertAndSend("/topic/event", "done");
+        simpMessagingTemplate.convertAndSend(TOPIC_EVENT, "done");
     }
 
     @Override
     public void onError(Throwable e) {
-        simpMessagingTemplate.convertAndSend("/topic/event", e.getMessage());
+        simpMessagingTemplate.convertAndSend(TOPIC_EVENT, e.getMessage());
     }
 
     @Override
     public void onNext(WatchEvent<?> event) {
-        simpMessagingTemplate.convertAndSend("/topic/event", event.kind().toString() + " | " + event.context());
+        simpMessagingTemplate.convertAndSend(TOPIC_EVENT, event.kind().toString() + " | " + event.context());
     }
 }

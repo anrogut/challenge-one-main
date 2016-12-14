@@ -1,6 +1,6 @@
 package com.gft.challenge.rest;
 
-import com.gft.challenge.service.ObserverService;
+import com.gft.challenge.rx.SubscriptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ObserverControllerIT {
 
     @Mock
-    private ObserverService observerService;
+    private SubscriptionHandler subscriptionHandler;
 
     @InjectMocks
     private ObserverController observerController;
@@ -39,6 +39,6 @@ public class ObserverControllerIT {
     @Test
     public void shouldReturn200OK() throws Exception {
         mockMvc.perform(get("/connect")).andExpect(status().isOk());
-        verify(observerService, times(1)).observeDirectory(anyString());
+        verify(subscriptionHandler, times(1)).observeDirectory(anyString());
     }
 }

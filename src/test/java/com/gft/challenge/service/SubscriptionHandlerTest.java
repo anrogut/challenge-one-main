@@ -1,5 +1,7 @@
 package com.gft.challenge.service;
 
+import com.gft.challenge.rx.FileEventReactiveStream;
+import com.gft.challenge.rx.SubscriptionHandler;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Test;
@@ -17,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ObserverServiceTest {
+public class SubscriptionHandlerTest {
 
     @Test
     public void shouldStartObservingDirectory() throws IOException {
@@ -25,9 +27,10 @@ public class ObserverServiceTest {
         Path rootPath = fs.getPath("/home");
         Files.createDirectory(rootPath);
 
-        ObserverService observerService = new ObserverService(mock(SimpMessagingTemplate.class), fs);
+        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
+                fs, new FileEventReactiveStream(fs));
 
-        Subscription subscription = observerService.observeDirectory(rootPath.toString());
+        Subscription subscription = subscriptionHandler.observeDirectory(rootPath.toString());
 
         assertThat(subscription).isNotNull();
         assertThat(subscription.isUnsubscribed()).isFalse();

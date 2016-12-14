@@ -1,5 +1,9 @@
 server:
   port: 8080
+  session:
+    cookie:
+      max-age: 120
+    timeout: 120
 
 observable:
   path: "C:\\Temp"

@@ -21,7 +21,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FileReactiveStreamTest {
+public class FileEventReactiveStreamTest {
 
     private FileSystem fileSystem;
     private Path home;
@@ -46,8 +46,8 @@ public class FileReactiveStreamTest {
         TestSubscriber<FileEvent> testSubscriber = TestSubscriber.create();
         Path temp = Files.createDirectory(fileSystem.getPath("/home/test"));
         Files.createFile(fileSystem.getPath("/home/file.txt"));
-        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<FileEvent> observable = fileReactiveStream.getEventStream(home);
+        FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        Observable<FileEvent> observable = fileEventReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
 
         Files.createFile(temp.resolve("hello.txt"));
@@ -63,8 +63,8 @@ public class FileReactiveStreamTest {
     @Test
     public void shouldCorrectlyGetFileCreateEventFromNewlyCreatedDirectory() throws IOException, InterruptedException {
         TestSubscriber<FileEvent> testSubscriber = TestSubscriber.create();
-        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<FileEvent> observable = fileReactiveStream.getEventStream(home);
+        FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        Observable<FileEvent> observable = fileEventReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
 
         Path test = Files.createDirectory(home.resolve("test"));
@@ -82,11 +82,11 @@ public class FileReactiveStreamTest {
 
     @Test
     public void shouldCloseCorrectly() throws Exception {
-        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        fileReactiveStream.close();
+        FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        fileEventReactiveStream.close();
 
         assertThatExceptionOfType(ClosedWatchServiceException.class)
-                .isThrownBy(() -> fileReactiveStream.getWatchService().take());
+                .isThrownBy(() -> fileEventReactiveStream.getWatchService().take());
     }
 
     @Test
@@ -95,9 +95,9 @@ public class FileReactiveStreamTest {
         when(home.register(any(WatchService.class), eq(StandardWatchEventKinds.ENTRY_CREATE), eq(StandardWatchEventKinds.ENTRY_DELETE)))
                 .thenThrow(new IOException());
 
-        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
+        FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
 
-        assertThatExceptionOfType(IOException.class).isThrownBy(() -> fileReactiveStream.getEventStream(home));
+        assertThatExceptionOfType(IOException.class).isThrownBy(() -> fileEventReactiveStream.getEventStream(home));
     }
 
 }

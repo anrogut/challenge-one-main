@@ -5,12 +5,12 @@ import rx.Observer;
 
 import java.nio.file.WatchEvent;
 
-public class FileReactiveStreamObserver implements Observer<FileEvent> {
+public class FileEventReactiveStreamObserver implements Observer<FileEvent> {
 
     private static final String TOPIC_EVENT = "/topic/event";
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public FileReactiveStreamObserver(SimpMessagingTemplate simpMessagingTemplate) {
+    public FileEventReactiveStreamObserver(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 

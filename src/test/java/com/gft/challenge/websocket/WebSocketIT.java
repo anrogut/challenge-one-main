@@ -3,8 +3,8 @@ package com.gft.challenge.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gft.challenge.ChallengeOneMainApplication;
 import com.gft.challenge.rx.FileEvent;
-import com.gft.challenge.rx.FileReactiveStream;
-import com.gft.challenge.rx.FileReactiveStreamObserver;
+import com.gft.challenge.rx.FileEventReactiveStream;
+import com.gft.challenge.rx.FileEventReactiveStreamObserver;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import com.google.common.jimfs.WatchServiceConfiguration;
@@ -71,9 +71,9 @@ public class WebSocketIT {
                 .build());
         Path home = fileSystem.getPath("/home");
         Files.createDirectory(home);
-        FileReactiveStream fileReactiveStream = new FileReactiveStream(fileSystem);
-        Observable<FileEvent> observable = fileReactiveStream.getEventStream(home);
-        observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
+        FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        Observable<FileEvent> observable = fileEventReactiveStream.getEventStream(home);
+        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate));
 
         Files.createDirectory(fileSystem.getPath("/home/test"));
         ObjectMapper objectMapper = new ObjectMapper();
@@ -86,7 +86,7 @@ public class WebSocketIT {
     @Test
     public void shouldSendErrorInformationMessage() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
-        observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
+        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate));
         awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
 
         assertThat(messages.poll()).isEqualTo("Exception");
@@ -95,7 +95,7 @@ public class WebSocketIT {
     @Test
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.just(new FileEvent()));
-        observable.subscribe(new FileReactiveStreamObserver(simpMessagingTemplate));
+        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate));
         awaitMessagesCount(2, 5000, TimeUnit.MILLISECONDS);
         messages.poll(5000, TimeUnit.MILLISECONDS);
 

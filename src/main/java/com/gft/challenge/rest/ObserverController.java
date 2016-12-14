@@ -1,6 +1,6 @@
 package com.gft.challenge.rest;
 
-import com.gft.challenge.service.ObserverService;
+import com.gft.challenge.rx.SubscriptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +12,16 @@ import java.io.IOException;
 @RestController
 public class ObserverController {
 
-    private final ObserverService observerService;
+    private final SubscriptionHandler subscriptionHandler;
 
     @Autowired
-    public ObserverController(ObserverService observerService) {
-        this.observerService = observerService;
+    public ObserverController(SubscriptionHandler subscriptionHandler) {
+        this.subscriptionHandler = subscriptionHandler;
     }
 
     @GetMapping("/connect")
     public ResponseEntity<Void> connect(@Value("${observable.path}") String path) throws IOException {
-        observerService.observeDirectory(path);
+        subscriptionHandler.observeDirectory(path);
         return ResponseEntity.ok().build();
     }
 }

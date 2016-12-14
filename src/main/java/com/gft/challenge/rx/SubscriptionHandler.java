@@ -23,6 +23,7 @@ public class SubscriptionHandler {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final FileSystem fileSystem;
+
     private FileEventReactiveStream fileEventReactiveStream;
 
     private List<Subscription> subscriptions = new ArrayList<>();
@@ -52,5 +53,9 @@ public class SubscriptionHandler {
         subscriptions.clear();
         //fileEventReactiveStream.close();
         LOG.info("Successfully unsubscribed from reactive stream: {}", this);
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 }

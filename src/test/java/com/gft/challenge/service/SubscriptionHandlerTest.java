@@ -35,4 +35,22 @@ public class SubscriptionHandlerTest {
         assertThat(subscription).isNotNull();
         assertThat(subscription.isUnsubscribed()).isFalse();
     }
+
+    @Test
+    public void shouldReleaseResourcesCorrectly() throws Exception {
+        FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
+        Path rootPath = fs.getPath("/home");
+        Files.createDirectory(rootPath);
+
+        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
+                fs, new FileEventReactiveStream(fs));
+
+        subscriptionHandler.observeDirectory("/home");
+
+        assertThat(subscriptionHandler.getSubscriptions()).hasSize(1);
+        Subscription subscription = subscriptionHandler.getSubscriptions().get(0);
+        subscriptionHandler.preDestroy();
+        assertThat(subscriptionHandler.getSubscriptions()).isEmpty();
+        assertThat(subscription.isUnsubscribed()).isTrue();
+    }
 }

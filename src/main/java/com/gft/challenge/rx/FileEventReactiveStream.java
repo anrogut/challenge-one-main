@@ -11,6 +11,7 @@ import org.springframework.web.context.annotation.SessionScope;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
@@ -82,6 +83,11 @@ public class FileEventReactiveStream implements AutoCloseable {
     public void close() throws Exception {
         observable = null;
         watchService.close();
+    }
+
+    @PreDestroy
+    public void preDestroy() throws Exception {
+        close();
     }
 
     WatchService getWatchService() {

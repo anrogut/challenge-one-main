@@ -93,6 +93,15 @@ public class WebSocketIT {
     }
 
     @Test
+    public void shouldSendErrorWithoutMessage() {
+        Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception()));
+        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate,"1"));
+        awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
+
+        assertThat(messages.poll()).isEqualTo("Error");
+    }
+
+    @Test
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.just(new FileEvent()));
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate,"1"));

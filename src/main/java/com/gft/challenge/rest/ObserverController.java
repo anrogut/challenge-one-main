@@ -24,4 +24,9 @@ public class ObserverController {
         subscriptionHandler.observeDirectory(path);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/heartbeat")
+    public ResponseEntity<Void> heartbeat() {
+        return ResponseEntity.ok().build();
+    }
 }

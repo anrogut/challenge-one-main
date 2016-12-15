@@ -17,7 +17,7 @@ import java.util.List;
 
 @Component
 @SessionScope
-public class SubscriptionHandler {
+public class SubscriptionHandler implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(SubscriptionHandler.class);
 
@@ -49,13 +49,19 @@ public class SubscriptionHandler {
 
     @PreDestroy
     public void preDestroy() throws Exception {
-        subscriptions.forEach(Subscription::unsubscribe);
-        subscriptions.clear();
-        //fileEventReactiveStream.close();
-        LOG.info("Successfully unsubscribed from reactive stream: {}", this);
+        close();
     }
 
     public List<Subscription> getSubscriptions() {
         return subscriptions;
+    }
+
+    @Override
+    public void close() throws Exception {
+        subscriptions.forEach(Subscription::unsubscribe);
+        subscriptions.clear();
+        Thread.sleep(1000);
+        fileEventReactiveStream.close();
+        LOG.info("Successfully unsubscribed from reactive stream: {}", this);
     }
 }

@@ -85,11 +85,6 @@ public class FileEventReactiveStream implements AutoCloseable {
         watchService.close();
     }
 
-    @PreDestroy
-    public void preDestroy() throws Exception {
-        close();
-    }
-
     WatchService getWatchService() {
         return watchService;
     }

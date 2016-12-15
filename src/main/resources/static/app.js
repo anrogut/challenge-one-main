@@ -1,7 +1,8 @@
 var stompClient = null;
+var connected = false;
 
 window.onload = function() {
-    $('#eventList').hide();
+    setConnected(connected);
 }
 
 function setConnected(connected) {
@@ -21,13 +22,22 @@ function connect() {
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
-            setConnected(true);
+            connected = true;
+            setConnected(connected);
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/event', function (event) {
                 addEvent(event.body)
             });
+            setTimeout(heartbeat, 60000);
         });
     });
+}
+
+function heartbeat() {
+    if(connected) {
+        $.get('/heartbeat')
+    }
+    setTimeout(heartbeat, 60000)
 }
 
 function addEvent(event) {
@@ -41,7 +51,8 @@ function disconnect() {
     if (stompClient != null) {
         stompClient.disconnect();
     }
-    setConnected(false);
+    connected = false
+    setConnected(connected);
     console.log('Disconnected');
 }
 

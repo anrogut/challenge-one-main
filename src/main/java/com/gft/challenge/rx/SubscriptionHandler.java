@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import rx.Subscription;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class SubscriptionHandler implements AutoCloseable {
         LOG.info("Successfully created handler: {}", this);
     }
 
-    public Subscription observeDirectory(String path, String endpointId) throws IOException {
+    public Subscription observeDirectory(@NotNull String path, @NotNull String endpointId) throws IOException {
         Subscription subscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
                 .subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId));
         subscriptions.add(subscription);

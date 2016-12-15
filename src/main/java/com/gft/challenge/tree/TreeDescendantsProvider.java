@@ -1,6 +1,7 @@
 package com.gft.challenge.tree;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -9,7 +10,7 @@ public final class TreeDescendantsProvider {
     private TreeDescendantsProvider(){}
 
     @Contract("null -> !null; !null -> !null")
-    public static <T> Iterator<Node<T>> getDescendants(Node<T> root) {
+    public static <T> Iterator<Node<T>> getDescendants(@Nullable Node<T> root) {
         if (root == null) {
             return Collections.emptyIterator();
         }

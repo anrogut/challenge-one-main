@@ -103,7 +103,7 @@ public class WebSocketIT {
 
     @Test
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
-        Observable<FileEvent> observable = Observable.defer(() -> Observable.just(new FileEvent()));
+        Observable<FileEvent> observable = Observable.defer(() -> Observable.just(FileEvent.empty()));
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate,"1"));
         awaitMessagesCount(2, 5000, TimeUnit.MILLISECONDS);
         messages.poll(5000, TimeUnit.MILLISECONDS);

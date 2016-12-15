@@ -37,7 +37,22 @@ public class SubscriptionHandlerTest {
     }
 
     @Test
-    public void shouldReleaseResourcesCorrectly() throws Exception {
+    public void shouldReturnSameInstanceOfSubscriptionWhenCalledManyTimes() throws IOException {
+        FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
+        Path rootPath = fs.getPath("/home");
+        Files.createDirectory(rootPath);
+
+        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
+                fs, new FileEventReactiveStream(fs));
+
+        Subscription subscriptionOne = subscriptionHandler.observeDirectory(rootPath.toString(),"1");
+        Subscription subscriptionTwo = subscriptionHandler.observeDirectory(rootPath.toString(),"1");
+
+        assertThat(subscriptionOne).isSameAs(subscriptionTwo);
+    }
+
+    @Test
+    public void shouldUnsubscribeCorrectly() throws Exception {
         FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
         Path rootPath = fs.getPath("/home");
         Files.createDirectory(rootPath);
@@ -47,10 +62,8 @@ public class SubscriptionHandlerTest {
 
         subscriptionHandler.observeDirectory("/home","1");
 
-        assertThat(subscriptionHandler.getSubscriptions()).hasSize(1);
-        Subscription subscription = subscriptionHandler.getSubscriptions().get(0);
+        assertThat(subscriptionHandler.getSubscription().isUnsubscribed()).isFalse();
         subscriptionHandler.close();
-        assertThat(subscriptionHandler.getSubscriptions()).isEmpty();
-        assertThat(subscription.isUnsubscribed()).isTrue();
+        assertThat(subscriptionHandler.getSubscription().isUnsubscribed()).isTrue();
     }
 }

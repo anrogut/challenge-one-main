@@ -37,8 +37,13 @@ public class ObserverControllerIT {
     }
 
     @Test
-    public void shouldReturn200OK() throws Exception {
+    public void getConnectShouldReturn200OK() throws Exception {
         mockMvc.perform(get("/connect")).andExpect(status().isOk());
         verify(subscriptionHandler, times(1)).observeDirectory(anyString(),anyString());
+    }
+
+    @Test
+    public void getHeartbeatShouldReturn200OK() throws Exception {
+        mockMvc.perform(get("/heartbeat")).andExpect(status().isOk());
     }
 }

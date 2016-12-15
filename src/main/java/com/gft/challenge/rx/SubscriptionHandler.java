@@ -11,8 +11,6 @@ import rx.Subscription;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @SessionScope
@@ -25,7 +23,7 @@ public class SubscriptionHandler implements AutoCloseable {
 
     private FileEventReactiveStream fileEventReactiveStream;
 
-    private List<Subscription> subscriptions = new ArrayList<>();
+    private Subscription fileEventSubscription;
 
     @Autowired
     public SubscriptionHandler(SimpMessagingTemplate simpMessagingTemplate, FileSystem fileSystem, FileEventReactiveStream fileEventReactiveStream) throws IOException {
@@ -36,20 +34,21 @@ public class SubscriptionHandler implements AutoCloseable {
     }
 
     public Subscription observeDirectory(@NotNull String path, @NotNull String endpointId) throws IOException {
-        Subscription subscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
+        if (fileEventSubscription != null) {
+            return fileEventSubscription;
+        }
+        fileEventSubscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
                 .subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId));
-        subscriptions.add(subscription);
-        return subscription;
+        return fileEventSubscription;
     }
 
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
+    public Subscription getSubscription() {
+        return fileEventSubscription;
     }
 
     @Override
     public void close() throws Exception {
-        subscriptions.forEach(Subscription::unsubscribe);
-        subscriptions.clear();
+        fileEventSubscription.unsubscribe();
         LOG.info("Successfully unsubscribed from reactive stream: {}", this);
     }
 }

@@ -9,6 +9,7 @@ public class FileEvent {
     private String absolutePath;
 
     public FileEvent() {
+        //empty file event
     }
 
     private FileEvent(String eventType, String absolutePath) {

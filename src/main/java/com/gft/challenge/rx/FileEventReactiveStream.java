@@ -11,7 +11,6 @@ import org.springframework.web.context.annotation.SessionScope;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;

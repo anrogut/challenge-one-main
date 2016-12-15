@@ -30,7 +30,7 @@ public class SubscriptionHandlerTest {
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
                 fs, new FileEventReactiveStream(fs));
 
-        Subscription subscription = subscriptionHandler.observeDirectory(rootPath.toString());
+        Subscription subscription = subscriptionHandler.observeDirectory(rootPath.toString(),"1");
 
         assertThat(subscription).isNotNull();
         assertThat(subscription.isUnsubscribed()).isFalse();
@@ -45,11 +45,11 @@ public class SubscriptionHandlerTest {
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
                 fs, new FileEventReactiveStream(fs));
 
-        subscriptionHandler.observeDirectory("/home");
+        subscriptionHandler.observeDirectory("/home","1");
 
         assertThat(subscriptionHandler.getSubscriptions()).hasSize(1);
         Subscription subscription = subscriptionHandler.getSubscriptions().get(0);
-        subscriptionHandler.preDestroy();
+        subscriptionHandler.close();
         assertThat(subscriptionHandler.getSubscriptions()).isEmpty();
         assertThat(subscription.isUnsubscribed()).isTrue();
     }

@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ChallengeOneMainApplication.class)
 public class WebSocketIT {
     private static final String STOMP_URL = "ws://localhost:8080/ws";
-    private static final String TOPIC = "/topic/event";
+    private static final String TOPIC = "/topic/event/1";
 
     private BlockingQueue<String> messages = new LinkedBlockingQueue<>();
 
@@ -73,7 +73,7 @@ public class WebSocketIT {
         Files.createDirectory(home);
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
         Observable<FileEvent> observable = fileEventReactiveStream.getEventStream(home);
-        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate));
+        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, "1"));
 
         Files.createDirectory(fileSystem.getPath("/home/test"));
         ObjectMapper objectMapper = new ObjectMapper();
@@ -86,7 +86,7 @@ public class WebSocketIT {
     @Test
     public void shouldSendErrorInformationMessage() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
-        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate));
+        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate,"1"));
         awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
 
         assertThat(messages.poll()).isEqualTo("Exception");
@@ -95,7 +95,7 @@ public class WebSocketIT {
     @Test
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.just(new FileEvent()));
-        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate));
+        observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate,"1"));
         awaitMessagesCount(2, 5000, TimeUnit.MILLISECONDS);
         messages.poll(5000, TimeUnit.MILLISECONDS);
 

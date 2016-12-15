@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import rx.Subscription;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.util.ArrayList;
@@ -33,23 +31,14 @@ public class SubscriptionHandler implements AutoCloseable {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.fileSystem = fileSystem;
         this.fileEventReactiveStream = fileEventReactiveStream;
-    }
-
-    public Subscription observeDirectory(String path) throws IOException {
-        Subscription subscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
-                .subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate));
-        subscriptions.add(subscription);
-        return subscription;
-    }
-
-    @PostConstruct
-    public void postConstruct() throws IOException {
         LOG.info("Successfully created handler: {}", this);
     }
 
-    @PreDestroy
-    public void preDestroy() throws Exception {
-        close();
+    public Subscription observeDirectory(String path, String endpointId) throws IOException {
+        Subscription subscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
+                .subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId));
+        subscriptions.add(subscription);
+        return subscription;
     }
 
     public List<Subscription> getSubscriptions() {
@@ -60,8 +49,6 @@ public class SubscriptionHandler implements AutoCloseable {
     public void close() throws Exception {
         subscriptions.forEach(Subscription::unsubscribe);
         subscriptions.clear();
-        Thread.sleep(1000);
-        fileEventReactiveStream.close();
         LOG.info("Successfully unsubscribed from reactive stream: {}", this);
     }
 }

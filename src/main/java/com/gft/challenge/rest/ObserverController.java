@@ -20,9 +20,10 @@ public class ObserverController {
     }
 
     @GetMapping("/connect")
-    public ResponseEntity<Void> connect(@Value("${observable.path}") String path) throws IOException {
-        subscriptionHandler.observeDirectory(path);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> connect(@Value("${observable.path}") String path) throws IOException {
+        String endpointId = subscriptionHandler.toString();
+        subscriptionHandler.observeDirectory(path,endpointId);
+        return ResponseEntity.ok().body(endpointId);
     }
 
     @GetMapping("/heartbeat")

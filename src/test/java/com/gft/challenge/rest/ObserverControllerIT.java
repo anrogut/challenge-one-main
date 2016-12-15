@@ -39,6 +39,6 @@ public class ObserverControllerIT {
     @Test
     public void shouldReturn200OK() throws Exception {
         mockMvc.perform(get("/connect")).andExpect(status().isOk());
-        verify(subscriptionHandler, times(1)).observeDirectory(anyString());
+        verify(subscriptionHandler, times(1)).observeDirectory(anyString(),anyString());
     }
 }

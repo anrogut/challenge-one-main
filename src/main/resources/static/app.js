@@ -18,14 +18,15 @@ function setConnected(connected) {
 }
 
 function connect() {
-    $.get('/connect', undefined, function() {
+    $.get('/connect', undefined, function(id) {
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             connected = true;
             setConnected(connected);
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/event', function (event) {
+            console.log('Subscribing to: ' + '/topic/event/' + id)
+            stompClient.subscribe('/topic/event/' + id, function (event) {
                 addEvent(event.body)
             });
             setTimeout(heartbeat, 60000);

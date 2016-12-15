@@ -81,8 +81,8 @@ public class FileEventReactiveStream implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        observable = null;
         watchService.close();
+        observable = null;
     }
 
     WatchService getWatchService() {

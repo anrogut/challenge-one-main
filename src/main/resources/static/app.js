@@ -9,12 +9,11 @@ function setConnected(connected) {
     $('#connect').prop('disabled', connected);
     $('#disconnect').prop('disabled', !connected);
     if (connected) {
-        $('#eventList').show();
+        $('#events').show();
     }
     else {
-        $('#eventList').hide();
+        $('#events').hide();
     }
-    $('#events').html('');
 }
 
 function connect() {

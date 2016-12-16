@@ -22,9 +22,7 @@ public class EndpointProviderService {
     }
 
     public void addEndpoint(String sessionId) {
-        if (!sessionEndpoints.containsKey(sessionId)) {
-            sessionEndpoints.put(sessionId, endPointNumber.getAndIncrement());
-        }
+        sessionEndpoints.put(sessionId, endPointNumber.getAndIncrement());
     }
 
     public int removeEndpoint(String sessionId) {

@@ -23,7 +23,7 @@ public class FileEvent {
                 fs.getSeparator() + watchEvent.context().toString());
     }
 
-    static public FileEvent empty() {
+    public static FileEvent empty() {
         return new FileEvent();
     }
 

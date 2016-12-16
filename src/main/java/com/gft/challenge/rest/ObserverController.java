@@ -9,15 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.io.IOException;
 
 @RestController
 public class ObserverController {
 
     private final SubscriptionHandler subscriptionHandler;
     private final EndpointProviderService endpointProviderService;
-    private final Map<String, Integer> endpointIds = new ConcurrentHashMap<>();
 
     @Autowired
     public ObserverController(SubscriptionHandler subscriptionHandler, EndpointProviderService endpointProviderService) {
@@ -26,9 +24,9 @@ public class ObserverController {
     }
 
     @GetMapping("/connect")
-    public ResponseEntity<Integer> connect(@Value("${observable.path}") String path, HttpSession session) throws Exception {
+    public ResponseEntity<Integer> connect(@Value("${observable.path}") String path, HttpSession session) throws IOException {
         int endpointId = endpointProviderService.getEndpoint(session.getId())
-                .orElseThrow(() -> new Exception("Something went wrong"));
+                .orElseThrow(() -> new IllegalStateException("Something went wrong"));
         subscriptionHandler.observeDirectory(path, endpointId);
         return ResponseEntity.ok().body(endpointId);
     }

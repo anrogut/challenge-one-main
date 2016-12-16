@@ -55,8 +55,7 @@ public class WebSocketIT {
         );
 
         StompSession session = stompClient.connect(STOMP_URL,
-                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {
-                }).get(2, TimeUnit.SECONDS);
+                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {}).get(2, TimeUnit.SECONDS);
 
         session.subscribe(TOPIC, new DefaultStompFrameHandler());
 

@@ -20,6 +20,7 @@ function setConnected(connected) {
 function connect() {
     $.get('/connect', undefined, function(id) {
         var socket = new SockJS('/ws');
+
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             connected = true;
@@ -29,16 +30,8 @@ function connect() {
             stompClient.subscribe('/topic/event/' + id, function (event) {
                 addEvent(event.body)
             });
-            setTimeout(heartbeat, 60000);
         });
     });
-}
-
-function heartbeat() {
-    if(connected) {
-        $.get('/heartbeat')
-    }
-    setTimeout(heartbeat, 60000)
 }
 
 function addEvent(event) {
@@ -57,10 +50,15 @@ function disconnect() {
     console.log('Disconnected');
 }
 
+function addFile() {
+    $.get('/addFile?name=' + $('#newFileNameInput').val());
+}
+
 $(function () {
     $('form').on('submit', function (e) {
         e.preventDefault();
     });
     $('#connect').click(function() { connect(); });
     $('#disconnect').click(function() { disconnect(); });
+    $('#addFile').click(function() { addFile(); });
 });

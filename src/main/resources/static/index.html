@@ -24,9 +24,17 @@
                 </div>
             </form>
         </div>
+        <div class="col-md-6">
+            <div class="input-group">
+                <input id="newFileNameInput" type="text" class="form-control" placeholder="Fill with file name...">
+                <span class="input-group-btn">
+                    <button id="addFile" class="btn btn-default" type="button">Add file</button>
+                </span>
+            </div>
+        </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <table id="eventList" class="table table-striped">
                 <thead>
                 <tr>
@@ -35,6 +43,19 @@
                 </tr>
                 </thead>
                 <tbody id="events">
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table id="folderStructure" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        <th>Path</th>
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="files">
                 </tbody>
             </table>
         </div>

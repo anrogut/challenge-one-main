@@ -1,33 +1,35 @@
 package com.gft.challenge.rest;
 
 import com.gft.challenge.rx.SubscriptionHandler;
+import com.gft.challenge.service.EndpointProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class ObserverController {
 
     private final SubscriptionHandler subscriptionHandler;
+    private final EndpointProviderService endpointProviderService;
+    private final Map<String, Integer> endpointIds = new ConcurrentHashMap<>();
 
     @Autowired
-    public ObserverController(SubscriptionHandler subscriptionHandler) {
+    public ObserverController(SubscriptionHandler subscriptionHandler, EndpointProviderService endpointProviderService) {
         this.subscriptionHandler = subscriptionHandler;
+        this.endpointProviderService = endpointProviderService;
     }
 
     @GetMapping("/connect")
-    public ResponseEntity<String> connect(@Value("${observable.path}") String path) throws IOException {
-        String endpointId = subscriptionHandler.toString();
-        subscriptionHandler.observeDirectory(path,endpointId);
+    public ResponseEntity<Integer> connect(@Value("${observable.path}") String path, HttpSession session) throws Exception {
+        int endpointId = endpointProviderService.getEndpoint(session.getId())
+                .orElseThrow(() -> new Exception("Something went wrong"));
+        subscriptionHandler.observeDirectory(path, endpointId);
         return ResponseEntity.ok().body(endpointId);
-    }
-
-    @GetMapping("/heartbeat")
-    public ResponseEntity<Void> heartbeat() {
-        return ResponseEntity.ok().build();
     }
 }

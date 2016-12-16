@@ -1,4 +1,4 @@
-package com.gft.challenge.service;
+package com.gft.challenge.rx;
 
 import com.gft.challenge.rx.FileEventReactiveStream;
 import com.gft.challenge.rx.SubscriptionHandler;
@@ -30,7 +30,7 @@ public class SubscriptionHandlerTest {
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
                 fs, new FileEventReactiveStream(fs));
 
-        Subscription subscription = subscriptionHandler.observeDirectory(rootPath.toString(),"1");
+        Subscription subscription = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
 
         assertThat(subscription).isNotNull();
         assertThat(subscription.isUnsubscribed()).isFalse();
@@ -45,8 +45,8 @@ public class SubscriptionHandlerTest {
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
                 fs, new FileEventReactiveStream(fs));
 
-        Subscription subscriptionOne = subscriptionHandler.observeDirectory(rootPath.toString(),"1");
-        Subscription subscriptionTwo = subscriptionHandler.observeDirectory(rootPath.toString(),"1");
+        Subscription subscriptionOne = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
+        Subscription subscriptionTwo = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
 
         assertThat(subscriptionOne).isSameAs(subscriptionTwo);
     }
@@ -60,7 +60,7 @@ public class SubscriptionHandlerTest {
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
                 fs, new FileEventReactiveStream(fs));
 
-        subscriptionHandler.observeDirectory("/home","1");
+        subscriptionHandler.observeDirectory("/home", 1);
 
         assertThat(subscriptionHandler.getSubscription().isUnsubscribed()).isFalse();
         subscriptionHandler.close();

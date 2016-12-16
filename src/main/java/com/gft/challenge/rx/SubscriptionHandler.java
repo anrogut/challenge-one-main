@@ -33,7 +33,7 @@ public class SubscriptionHandler implements AutoCloseable {
         LOG.info("Successfully created handler: {}", this);
     }
 
-    public Subscription observeDirectory(@NotNull String path, @NotNull String endpointId) throws IOException {
+    public Subscription observeDirectory(@NotNull String path, @NotNull int endpointId) throws IOException {
         if (fileEventSubscription != null) {
             return fileEventSubscription;
         }

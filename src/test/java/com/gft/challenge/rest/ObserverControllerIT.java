@@ -1,6 +1,7 @@
 package com.gft.challenge.rest;
 
 import com.gft.challenge.rx.SubscriptionHandler;
+import com.gft.challenge.service.EndpointProviderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,10 +13,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +29,9 @@ public class ObserverControllerIT {
 
     @Mock
     private SubscriptionHandler subscriptionHandler;
+
+    @Mock
+    private EndpointProviderService endpointProviderService;
 
     @InjectMocks
     private ObserverController observerController;
@@ -38,12 +45,8 @@ public class ObserverControllerIT {
 
     @Test
     public void getConnectShouldReturn200OK() throws Exception {
+        when(endpointProviderService.getEndpoint("1")).thenReturn(Optional.of(1));
         mockMvc.perform(get("/connect")).andExpect(status().isOk());
-        verify(subscriptionHandler, times(1)).observeDirectory(anyString(),anyString());
-    }
-
-    @Test
-    public void getHeartbeatShouldReturn200OK() throws Exception {
-        mockMvc.perform(get("/heartbeat")).andExpect(status().isOk());
+        verify(subscriptionHandler, times(1)).observeDirectory(anyString(), anyInt());
     }
 }

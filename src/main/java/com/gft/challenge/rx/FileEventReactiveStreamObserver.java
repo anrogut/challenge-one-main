@@ -7,9 +7,9 @@ public class FileEventReactiveStreamObserver implements Observer<FileEvent> {
 
     private static final String TOPIC_EVENT = "/topic/event/";
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final String endpointId;
+    private final int endpointId;
 
-    public FileEventReactiveStreamObserver(SimpMessagingTemplate simpMessagingTemplate, String endpointId) {
+    public FileEventReactiveStreamObserver(SimpMessagingTemplate simpMessagingTemplate, int endpointId) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.endpointId = endpointId;
     }

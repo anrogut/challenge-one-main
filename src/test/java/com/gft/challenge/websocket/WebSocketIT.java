@@ -109,6 +109,8 @@ public class WebSocketIT {
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream);
         subscriptionHandler.observeDirectory("/home",1);
+        subscriptionHandler.sendDirectoryStructure("/home");
+
 
         String jsonString = dirs.poll(5000, TimeUnit.MILLISECONDS);
         assertThat(jsonString.contains(p.toString())).isTrue();

@@ -1,5 +1,6 @@
 package com.gft.challenge.rx;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import rx.Subscription;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @SessionScope
@@ -26,6 +25,8 @@ public class SubscriptionHandler implements AutoCloseable {
 
     private Subscription fileEventSubscription;
 
+    private FileEventReactiveStreamObserver observer;
+
     @Autowired
     public SubscriptionHandler(SimpMessagingTemplate simpMessagingTemplate, FileSystem fileSystem, FileEventReactiveStream fileEventReactiveStream) throws IOException {
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -34,16 +35,18 @@ public class SubscriptionHandler implements AutoCloseable {
         LOG.info("Successfully created handler: {}", this);
     }
 
-    public Subscription observeDirectory(@NotNull String path, @NotNull int endpointId) throws IOException {
+    public Subscription observeDirectory(@NotNull String path, int endpointId) throws IOException {
         if (fileEventSubscription != null) {
             return fileEventSubscription;
         }
-        FileEventReactiveStreamObserver observer = new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId);
+        observer = new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId);
         fileEventSubscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
-                .doOnSubscribe(() -> observer.sendDirectoryStructure(fileSystem.getPath(path)))
-                .delaySubscription(1000, TimeUnit.MILLISECONDS)
                 .subscribe(observer);
         return fileEventSubscription;
+    }
+
+    public void sendDirectoryStructure(@NotNull String path) {
+        observer.sendDirectoryStructure(fileSystem.getPath(path));
     }
 
 

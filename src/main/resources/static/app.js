@@ -13,6 +13,7 @@ function setConnected(connected) {
     }
     else {
         $('#events').hide();
+        $('#files').empty();
     }
 }
 
@@ -32,6 +33,9 @@ function connect() {
                 addEvent(event.body);
             });
         });
+        setTimeout(function() {
+            $.get('/structure');
+        },500);
     });
 }
 

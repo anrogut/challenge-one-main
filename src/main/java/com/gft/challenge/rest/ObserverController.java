@@ -30,4 +30,10 @@ public class ObserverController {
         subscriptionHandler.observeDirectory(path, endpointId);
         return ResponseEntity.ok().body(endpointId);
     }
+
+    @GetMapping("/structure")
+    public ResponseEntity<Void> getDirectoryStructure(@Value("${observable.path}") String path) {
+        subscriptionHandler.sendDirectoryStructure(path);
+        return ResponseEntity.ok().build();
+    }
 }

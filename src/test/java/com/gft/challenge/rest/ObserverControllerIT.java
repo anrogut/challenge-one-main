@@ -49,4 +49,10 @@ public class ObserverControllerIT {
         mockMvc.perform(get("/connect")).andExpect(status().isOk());
         verify(subscriptionHandler, times(1)).observeDirectory(anyString(), anyInt());
     }
+
+    @Test
+    public void getStructureShouldReturn200O0K() throws Exception {
+        mockMvc.perform(get("/structure")).andExpect(status().isOk());
+        verify(subscriptionHandler, times(1)).sendDirectoryStructure(anyString());
+    }
 }

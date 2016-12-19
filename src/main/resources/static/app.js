@@ -45,7 +45,7 @@ function addEvent(event) {
 function addFileToStructure(file) {
     var fileObj = JSON.parse(file);
     var humanReadablePath = decodeURIComponent(fileObj.path.substr(8)); // remove 'file:///'
-    var iconClass = humanReadablePath.charAt(humanReadablePath.length - 1) === '/' ? "glyphicon glyphicon-folder-open" : "glyphicon glyphicon-file";
+    var iconClass = humanReadablePath.charAt(humanReadablePath.length - 1) === '/' ? 'glyphicon glyphicon-folder-open' : 'glyphicon glyphicon-file';
     $('#files').append('<tr><td><span class="' + iconClass + '"></span>    ' + humanReadablePath + '</td></tr>')
 }
 

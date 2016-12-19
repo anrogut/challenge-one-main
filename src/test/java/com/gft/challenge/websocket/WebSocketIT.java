@@ -5,9 +5,12 @@ import com.gft.challenge.ChallengeOneMainApplication;
 import com.gft.challenge.rx.FileEvent;
 import com.gft.challenge.rx.FileEventReactiveStream;
 import com.gft.challenge.rx.FileEventReactiveStreamObserver;
+import com.gft.challenge.rx.SubscriptionHandler;
+import com.gft.challenge.tree.PathNode;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import com.google.common.jimfs.WatchServiceConfiguration;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +29,7 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import rx.Observable;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -41,9 +45,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ChallengeOneMainApplication.class)
 public class WebSocketIT {
     private static final String STOMP_URL = "ws://localhost:8080/ws";
-    private static final String TOPIC = "/topic/event/1";
+    private static final String TOPIC_EVENT = "/topic/event/1";
+    private static final String TOPIC_DIR = "/topic/dir/1";
 
-    private BlockingQueue<String> messages = new LinkedBlockingQueue<>();
+    private BlockingQueue<String> events = new LinkedBlockingQueue<>();
+    private BlockingQueue<String> dirs = new LinkedBlockingQueue<>();
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -55,11 +61,19 @@ public class WebSocketIT {
         );
 
         StompSession session = stompClient.connect(STOMP_URL,
-                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {}).get(2, TimeUnit.SECONDS);
+                new WebSocketHttpHeaders(), new StompSessionHandlerAdapter() {
+                }).get(2, TimeUnit.SECONDS);
 
-        session.subscribe(TOPIC, new DefaultStompFrameHandler());
+        session.subscribe(TOPIC_EVENT, new DefaultStompFrameHandler(events));
+        session.subscribe(TOPIC_DIR, new DefaultStompFrameHandler(dirs));
 
         Thread.sleep(100);
+    }
+
+    @After
+    public void cleanUp() {
+        dirs.clear();
+        events.clear();
     }
 
     @Test
@@ -76,42 +90,60 @@ public class WebSocketIT {
 
         Files.createDirectory(fileSystem.getPath("/home/test"));
         ObjectMapper objectMapper = new ObjectMapper();
-        FileEvent fe = objectMapper.readValue(messages.poll(5000, TimeUnit.MILLISECONDS), FileEvent.class);
+        FileEvent fe = objectMapper.readValue(events.poll(5000, TimeUnit.MILLISECONDS), FileEvent.class);
 
         assertThat(fe.getEventType()).isEqualTo("ENTRY_CREATE");
         assertThat(fe.getAbsolutePath()).isEqualTo("/home/test");
     }
 
     @Test
+    public void shouldEmitDirectoryStructure() throws Exception {
+        FileSystem fileSystem = Jimfs.newFileSystem(Configuration.unix()
+                .toBuilder()
+                .setWatchServiceConfiguration(WatchServiceConfiguration.polling(10, TimeUnit.MILLISECONDS))
+                .build());
+        Path home = fileSystem.getPath("/home");
+        Files.createDirectory(home);
+        Path p = Files.createDirectory(fileSystem.getPath("/home/test"));
+
+        FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream);
+        subscriptionHandler.observeDirectory("/home",1);
+
+        String jsonString = dirs.poll(5000, TimeUnit.MILLISECONDS);
+        assertThat(jsonString.contains(p.toString())).isTrue();
+    }
+
+    @Test
     public void shouldSendErrorInformationMessage() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, 1));
-        awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
+        awaitMessagesCount(events,1, 5000, TimeUnit.MILLISECONDS);
 
-        assertThat(messages.poll()).isEqualTo("Exception");
+        assertThat(events.poll()).isEqualTo("Exception");
     }
 
     @Test
     public void shouldSendErrorWithoutMessage() {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception()));
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, 1));
-        awaitMessagesCount(1, 5000, TimeUnit.MILLISECONDS);
+        awaitMessagesCount(events,1, 5000, TimeUnit.MILLISECONDS);
 
-        assertThat(messages.poll()).isEqualTo("Error");
+        assertThat(events.poll()).isEqualTo("Error");
     }
 
     @Test
     public void shouldSendCompleteInformationMessage() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.just(FileEvent.empty()));
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, 1));
-        awaitMessagesCount(2, 5000, TimeUnit.MILLISECONDS);
-        messages.poll(5000, TimeUnit.MILLISECONDS);
+        awaitMessagesCount(events,2, 5000, TimeUnit.MILLISECONDS);
+        events.poll(5000, TimeUnit.MILLISECONDS);
 
-        assertThat(messages.poll()).isEqualTo("done");
+        assertThat(events.poll()).isEqualTo("done");
     }
 
-    public final boolean awaitMessagesCount(int expected, long timeout, TimeUnit unit) {
-        while (timeout != 0 && messages.size() < expected) {
+    public final boolean awaitMessagesCount(BlockingQueue queue, int expected, long timeout, TimeUnit unit) {
+        while (timeout != 0 && queue.size() < expected) {
             try {
                 unit.sleep(1);
             } catch (InterruptedException e) {
@@ -119,10 +151,16 @@ public class WebSocketIT {
             }
             timeout--;
         }
-        return messages.size() >= expected;
+        return queue.size() >= expected;
     }
 
     class DefaultStompFrameHandler implements StompFrameHandler {
+
+        private BlockingQueue<String> queue;
+
+        DefaultStompFrameHandler(BlockingQueue<String> queue) {
+            this.queue = queue;
+        }
 
         @Override
         public Type getPayloadType(StompHeaders headers) {
@@ -131,7 +169,7 @@ public class WebSocketIT {
 
         @Override
         public synchronized void handleFrame(StompHeaders headers, Object payload) {
-            messages.offer(new String((byte[]) payload));
+            queue.offer(new String((byte[]) payload));
         }
     }
 

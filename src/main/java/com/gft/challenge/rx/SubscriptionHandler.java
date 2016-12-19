@@ -11,6 +11,7 @@ import rx.Subscription;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @SessionScope
@@ -37,10 +38,14 @@ public class SubscriptionHandler implements AutoCloseable {
         if (fileEventSubscription != null) {
             return fileEventSubscription;
         }
+        FileEventReactiveStreamObserver observer = new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId);
         fileEventSubscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
-                .subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId));
+                .doOnSubscribe(() -> observer.sendDirectoryStructure(fileSystem.getPath(path)))
+                .delaySubscription(1000, TimeUnit.MILLISECONDS)
+                .subscribe(observer);
         return fileEventSubscription;
     }
+
 
     public Subscription getSubscription() {
         return fileEventSubscription;

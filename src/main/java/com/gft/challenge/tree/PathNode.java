@@ -1,5 +1,6 @@
 package com.gft.challenge.tree;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ public class PathNode implements Node<Path> {
     }
 
     @Override
+    @JsonProperty("path")
     public Path get() {
         return path;
     }

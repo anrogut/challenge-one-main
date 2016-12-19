@@ -25,9 +25,11 @@ function connect() {
             connected = true;
             setConnected(connected);
             console.log('Connected: ' + frame);
-            console.log('Subscribing to: ' + '/topic/event/' + id)
+            stompClient.subscribe('/topic/dir/' + id, function (dir) {
+                addFileToStructure(dir.body);
+            })
             stompClient.subscribe('/topic/event/' + id, function (event) {
-                addEvent(event.body)
+                addEvent(event.body);
             });
         });
     });
@@ -38,6 +40,11 @@ function addEvent(event) {
     var labelClass = eventObj.eventType === 'ENTRY_CREATE' ? 'label-success' : 'label-danger';
     $('#events').append('<tr><td><span class="label ' +labelClass + '">' + eventObj.eventType + '</span></td>' +
                         '<td>' + eventObj.absolutePath + '</td></tr>');
+}
+
+function addFileToStructure(file) {
+    var fileObj = JSON.parse(file);
+    $('#files').append('<tr><td>' + fileObj.path + '</td></tr>')
 }
 
 function disconnect() {

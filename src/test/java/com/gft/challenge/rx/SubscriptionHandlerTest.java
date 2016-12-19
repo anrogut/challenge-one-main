@@ -1,7 +1,5 @@
 package com.gft.challenge.rx;
 
-import com.gft.challenge.rx.FileEventReactiveStream;
-import com.gft.challenge.rx.SubscriptionHandler;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Test;

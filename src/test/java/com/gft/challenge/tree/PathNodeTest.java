@@ -26,12 +26,12 @@ public class PathNodeTest {
         Node<Path> root = new PathNode(Paths.get(ROOT_PATH));
         Iterator<Node<Path>> it = TreeDescendantsProvider.getDescendants(root);
         List<String> correctPathList = Arrays.asList(
-                "src\\main\\java\\com\\gft\\challenge\\tree\\PathNode.java",
-                "src\\test\\java\\com\\gft\\challenge\\tree\\PathNodeTest.java",
-                "src\\main\\resources\\application.yml"
+                "src/main/java/com/gft/challenge/tree/PathNode.java",
+                "src/test/java/com/gft/challenge/tree/PathNodeTest.java",
+                "src/main/resources/application.yml"
         );
         List<String> listOfPaths = new ArrayList<>();
-        it.forEachRemaining((e) -> listOfPaths.add(e.get().toString()));
+        it.forEachRemaining((e) -> listOfPaths.add(e.get().toString().replace("\\","/")));
 
         assertThat(listOfPaths).containsAll(correctPathList);
     }

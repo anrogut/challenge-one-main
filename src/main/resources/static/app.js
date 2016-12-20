@@ -41,9 +41,11 @@ function connect() {
 
 function addEvent(event) {
     var eventObj = JSON.parse(event);
-    var labelClass = eventObj.payload.eventType === 'ENTRY_CREATE' ? 'label-success' : 'label-danger';
-    $('#events').append('<tr><td><span class="label ' +labelClass + '">' + eventObj.payload.eventType + '</span></td>' +
-                        '<td>' + eventObj.payload.absolutePath + '</td></tr>');
+    if(fileObj.messageType === 'DEFAULT') {
+        var labelClass = eventObj.payload.eventType === 'ENTRY_CREATE' ? 'label-success' : 'label-danger';
+        $('#events').append('<tr><td><span class="label ' +labelClass + '">' + eventObj.payload.eventType + '</span></td>' +
+                            '<td>' + eventObj.payload.absolutePath + '</td></tr>');
+    }
 }
 
 function addFileToStructure(file) {

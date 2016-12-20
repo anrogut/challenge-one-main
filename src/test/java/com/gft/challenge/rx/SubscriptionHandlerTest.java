@@ -1,5 +1,7 @@
 package com.gft.challenge.rx;
 
+import com.gft.challenge.rx.event.FileEventReactiveStream;
+import com.gft.challenge.rx.struct.DirStructureReactiveStream;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Test;
@@ -26,7 +28,7 @@ public class SubscriptionHandlerTest {
         Files.createDirectory(rootPath);
 
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
-                fs, new FileEventReactiveStream(fs));
+                fs, new FileEventReactiveStream(fs), new DirStructureReactiveStream());
 
         Subscription subscription = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
 
@@ -41,7 +43,7 @@ public class SubscriptionHandlerTest {
         Files.createDirectory(rootPath);
 
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
-                fs, new FileEventReactiveStream(fs));
+                fs, new FileEventReactiveStream(fs), new DirStructureReactiveStream());
 
         Subscription subscriptionOne = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
         Subscription subscriptionTwo = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
@@ -56,7 +58,7 @@ public class SubscriptionHandlerTest {
         Files.createDirectory(rootPath);
 
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
-                fs, new FileEventReactiveStream(fs));
+                fs, new FileEventReactiveStream(fs), new DirStructureReactiveStream());
 
         subscriptionHandler.observeDirectory("/home", 1);
 

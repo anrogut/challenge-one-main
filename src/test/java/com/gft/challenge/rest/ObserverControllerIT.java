@@ -17,9 +17,7 @@ import java.util.Optional;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,7 +50,8 @@ public class ObserverControllerIT {
 
     @Test
     public void getStructureShouldReturn200O0K() throws Exception {
+        when(endpointProviderService.getEndpoint("2")).thenReturn(Optional.of(2));
         mockMvc.perform(get("/structure")).andExpect(status().isOk());
-        verify(subscriptionHandler, times(1)).sendDirectoryStructure(anyString());
+        verify(subscriptionHandler, times(1)).sendDirectoryStructure(anyString(), anyInt());
     }
 }

@@ -1,4 +1,4 @@
-package com.gft.challenge.rx;
+package com.gft.challenge.rx.event;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,16 +1,11 @@
-package com.gft.challenge.rx;
+package com.gft.challenge.rx.event;
 
-import com.gft.challenge.tree.PathNode;
-import com.gft.challenge.tree.TreeDescendantsProvider;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import rx.Observer;
-
-import java.nio.file.Path;
 
 public class FileEventReactiveStreamObserver implements Observer<FileEvent> {
 
     private static final String TOPIC_EVENT = "/topic/event/";
-    private static final String TOPIC_DIR = "/topic/dir/";
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final int endpointId;
 
@@ -35,10 +30,5 @@ public class FileEventReactiveStreamObserver implements Observer<FileEvent> {
     public void onNext(FileEvent event) {
         simpMessagingTemplate
                 .convertAndSend(TOPIC_EVENT + endpointId, event);
-    }
-
-    public void sendDirectoryStructure(Path path) {
-        TreeDescendantsProvider.getDescendants(new PathNode(path))
-                .forEachRemaining(node -> simpMessagingTemplate.convertAndSend(TOPIC_DIR + endpointId, node));
     }
 }

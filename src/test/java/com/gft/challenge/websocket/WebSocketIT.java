@@ -2,11 +2,13 @@ package com.gft.challenge.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gft.challenge.ChallengeOneMainApplication;
-import com.gft.challenge.rx.FileEvent;
-import com.gft.challenge.rx.FileEventReactiveStream;
-import com.gft.challenge.rx.FileEventReactiveStreamObserver;
+import com.gft.challenge.rx.event.FileEvent;
+import com.gft.challenge.rx.event.FileEventReactiveStream;
+import com.gft.challenge.rx.event.FileEventReactiveStreamObserver;
 import com.gft.challenge.rx.SubscriptionHandler;
-import com.gft.challenge.tree.PathNode;
+import com.gft.challenge.rx.struct.DirStructureReactiveStream;
+import com.gft.challenge.rx.struct.DirStructureReactiveStreamObserver;
+import com.gft.challenge.tree.Node;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import com.google.common.jimfs.WatchServiceConfiguration;
@@ -29,7 +31,6 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import rx.Observable;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -107,9 +108,10 @@ public class WebSocketIT {
         Path p = Files.createDirectory(fileSystem.getPath("/home/test"));
 
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
-        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream);
+        DirStructureReactiveStream dirStructureReactiveStream = new DirStructureReactiveStream();
+        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream,dirStructureReactiveStream);
         subscriptionHandler.observeDirectory("/home",1);
-        subscriptionHandler.sendDirectoryStructure("/home");
+        subscriptionHandler.sendDirectoryStructure("/home", 1);
 
 
         String jsonString = dirs.poll(5000, TimeUnit.MILLISECONDS);
@@ -117,7 +119,7 @@ public class WebSocketIT {
     }
 
     @Test
-    public void shouldSendErrorInformationMessage() throws InterruptedException {
+    public void shouldSendErrorInformationMessageFromEventStream() throws InterruptedException {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, 1));
         awaitMessagesCount(events,1, 5000, TimeUnit.MILLISECONDS);
@@ -126,12 +128,30 @@ public class WebSocketIT {
     }
 
     @Test
-    public void shouldSendErrorWithoutMessage() {
+    public void shouldSendErrorWithoutMessageFromEventStream() {
         Observable<FileEvent> observable = Observable.defer(() -> Observable.error(new Exception()));
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, 1));
         awaitMessagesCount(events,1, 5000, TimeUnit.MILLISECONDS);
 
         assertThat(events.poll()).isEqualTo("Error");
+    }
+
+    @Test
+    public void shouldSendErrorInformationMessageFromDirStream() throws InterruptedException {
+        Observable<Node<Path>> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
+        observable.subscribe(new DirStructureReactiveStreamObserver(simpMessagingTemplate, 1));
+        awaitMessagesCount(dirs,1, 5000, TimeUnit.MILLISECONDS);
+
+        assertThat(dirs.poll()).isEqualTo("Exception");
+    }
+
+    @Test
+    public void shouldSendErrorWithoutMessageFromDirStream() {
+        Observable<Node<Path>> observable = Observable.defer(() -> Observable.error(new Exception()));
+        observable.subscribe(new DirStructureReactiveStreamObserver(simpMessagingTemplate, 1));
+        awaitMessagesCount(dirs,1, 5000, TimeUnit.MILLISECONDS);
+
+        assertThat(dirs.poll()).isEqualTo("Error");
     }
 
     @Test

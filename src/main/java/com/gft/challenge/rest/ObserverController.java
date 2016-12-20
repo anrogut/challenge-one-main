@@ -32,8 +32,10 @@ public class ObserverController {
     }
 
     @GetMapping("/structure")
-    public ResponseEntity<Void> getDirectoryStructure(@Value("${observable.path}") String path) {
-        subscriptionHandler.sendDirectoryStructure(path);
+    public ResponseEntity<Void> getDirectoryStructure(@Value("${observable.path}") String path, HttpSession session) throws IOException {
+        int endpointId = endpointProviderService.getEndpoint(session.getId())
+                .orElseThrow(() -> new IllegalStateException("Something went wrong"));
+        subscriptionHandler.sendDirectoryStructure(path, endpointId);
         return ResponseEntity.ok().build();
     }
 }

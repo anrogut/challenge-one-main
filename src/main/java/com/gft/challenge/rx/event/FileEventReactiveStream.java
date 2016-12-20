@@ -1,4 +1,4 @@
-package com.gft.challenge.rx;
+package com.gft.challenge.rx.event;
 
 import com.gft.challenge.tree.PathNode;
 import com.gft.challenge.tree.TreeDescendantsProvider;
@@ -84,7 +84,7 @@ public class FileEventReactiveStream implements AutoCloseable {
         observable = null;
     }
 
-    WatchService getWatchService() {
+    public WatchService getWatchService() {
         return watchService;
     }
 }

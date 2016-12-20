@@ -2,8 +2,8 @@ package com.gft.challenge.rx;
 
 import com.gft.challenge.rx.event.FileEventReactiveStream;
 import com.gft.challenge.rx.event.FileEventReactiveStreamObserver;
-import com.gft.challenge.rx.struct.DirStructureReactiveStream;
-import com.gft.challenge.rx.struct.DirStructureReactiveStreamObserver;
+import com.gft.challenge.rx.struct.DirectoryStructureReactiveStream;
+import com.gft.challenge.rx.struct.DirectoryStructureReactiveStreamObserver;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class SubscriptionHandler implements AutoCloseable {
     private final FileSystem fileSystem;
 
     private final FileEventReactiveStream fileEventReactiveStream;
-    private final DirStructureReactiveStream dirStructureReactiveStream;
+    private final DirectoryStructureReactiveStream directoryStructureReactiveStream;
 
     private Subscription fileEventSubscription;
 
@@ -36,11 +36,11 @@ public class SubscriptionHandler implements AutoCloseable {
     public SubscriptionHandler(SimpMessagingTemplate simpMessagingTemplate,
                                FileSystem fileSystem,
                                FileEventReactiveStream fileEventReactiveStream,
-                               DirStructureReactiveStream dirStructureReactiveStream) throws IOException {
+                               DirectoryStructureReactiveStream directoryStructureReactiveStream) throws IOException {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.fileSystem = fileSystem;
         this.fileEventReactiveStream = fileEventReactiveStream;
-        this.dirStructureReactiveStream = dirStructureReactiveStream;
+        this.directoryStructureReactiveStream = directoryStructureReactiveStream;
         LOG.info("Successfully created handler: {}", this);
     }
 
@@ -55,8 +55,8 @@ public class SubscriptionHandler implements AutoCloseable {
     }
 
     public void sendDirectoryStructure(@NotNull String path, int endpointId) throws IOException {
-        DirStructureReactiveStreamObserver dirObserver = new DirStructureReactiveStreamObserver(simpMessagingTemplate, endpointId);
-        dirStructureReactiveStream.getDirStructureStream(fileSystem.getPath(path))
+        DirectoryStructureReactiveStreamObserver dirObserver = new DirectoryStructureReactiveStreamObserver(simpMessagingTemplate, endpointId);
+        directoryStructureReactiveStream.getDirStructureStream(fileSystem.getPath(path))
                 .subscribe(dirObserver);
     }
 

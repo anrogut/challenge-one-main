@@ -11,7 +11,7 @@ import rx.schedulers.Schedulers;
 import java.nio.file.Path;
 
 @Component
-public class DirStructureReactiveStream {
+public class DirectoryStructureReactiveStream {
 
     public Observable<Node<Path>> getDirStructureStream(@NotNull Path path) {
         return Observable.from(() -> TreeDescendantsProvider.getDescendants(new PathNode(path)))

@@ -6,8 +6,8 @@ import com.gft.challenge.rx.event.FileEvent;
 import com.gft.challenge.rx.event.FileEventReactiveStream;
 import com.gft.challenge.rx.event.FileEventReactiveStreamObserver;
 import com.gft.challenge.rx.SubscriptionHandler;
-import com.gft.challenge.rx.struct.DirStructureReactiveStream;
-import com.gft.challenge.rx.struct.DirStructureReactiveStreamObserver;
+import com.gft.challenge.rx.struct.DirectoryStructureReactiveStream;
+import com.gft.challenge.rx.struct.DirectoryStructureReactiveStreamObserver;
 import com.gft.challenge.tree.Node;
 import com.gft.challenge.ws.model.EventWebSocketMessage;
 import com.gft.challenge.ws.model.PathNodeWebSocketMessage;
@@ -111,8 +111,8 @@ public class WebSocketIT {
         Path p = Files.createDirectory(fileSystem.getPath("/home/test"));
 
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
-        DirStructureReactiveStream dirStructureReactiveStream = new DirStructureReactiveStream();
-        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream,dirStructureReactiveStream);
+        DirectoryStructureReactiveStream directoryStructureReactiveStream = new DirectoryStructureReactiveStream();
+        SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream, directoryStructureReactiveStream);
         subscriptionHandler.observeDirectory("/home",1);
         subscriptionHandler.sendDirectoryStructure("/home", 1);
         awaitMessagesCount(dirs,1, 5000, TimeUnit.MILLISECONDS);
@@ -149,7 +149,7 @@ public class WebSocketIT {
     @Test
     public void shouldSendErrorInformationMessageFromDirStream() throws IOException {
         Observable<Node<Path>> observable = Observable.defer(() -> Observable.error(new Exception("Exception")));
-        observable.subscribe(new DirStructureReactiveStreamObserver(simpMessagingTemplate, 1));
+        observable.subscribe(new DirectoryStructureReactiveStreamObserver(simpMessagingTemplate, 1));
         awaitMessagesCount(dirs,1, 5000, TimeUnit.MILLISECONDS);
         ObjectMapper objectMapper = new ObjectMapper();
         PathNodeWebSocketMessage pathNodeWebSocketMessage = objectMapper.readValue(dirs.poll(),PathNodeWebSocketMessage.class);
@@ -160,7 +160,7 @@ public class WebSocketIT {
     @Test
     public void shouldSendErrorWithoutMessageFromDirStream() throws IOException {
         Observable<Node<Path>> observable = Observable.defer(() -> Observable.error(new Exception()));
-        observable.subscribe(new DirStructureReactiveStreamObserver(simpMessagingTemplate, 1));
+        observable.subscribe(new DirectoryStructureReactiveStreamObserver(simpMessagingTemplate, 1));
         awaitMessagesCount(dirs,1, 5000, TimeUnit.MILLISECONDS);
         ObjectMapper objectMapper = new ObjectMapper();
         PathNodeWebSocketMessage pathNodeWebSocketMessage = objectMapper.readValue(dirs.poll(),PathNodeWebSocketMessage.class);

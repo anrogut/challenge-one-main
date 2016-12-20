@@ -7,13 +7,15 @@ import rx.Observer;
 
 import java.nio.file.Path;
 
-public class DirStructureReactiveStreamObserver implements Observer<Node<Path>> {
+public class DirectoryStructureReactiveStreamObserver implements Observer<Node<Path>> {
 
+    private static final String SUCCESS_MESSAGE = "Successfully received all files in directory";
     private static final String TOPIC_DIR = "/topic/dir/";
+
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final int endpointId;
 
-    public DirStructureReactiveStreamObserver(SimpMessagingTemplate simpMessagingTemplate, int endpointId) {
+    public DirectoryStructureReactiveStreamObserver(SimpMessagingTemplate simpMessagingTemplate, int endpointId) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.endpointId = endpointId;
     }
@@ -21,7 +23,7 @@ public class DirStructureReactiveStreamObserver implements Observer<Node<Path>> 
     @Override
     public void onCompleted() {
         simpMessagingTemplate
-                .convertAndSend(TOPIC_DIR + endpointId, PathNodeWebSocketMessage.withCompleteMessage("Done"));
+                .convertAndSend(TOPIC_DIR + endpointId, PathNodeWebSocketMessage.withCompleteMessage(SUCCESS_MESSAGE));
     }
 
     @Override

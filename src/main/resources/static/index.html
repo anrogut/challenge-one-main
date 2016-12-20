@@ -3,9 +3,11 @@
 <head>
     <title>Challenge One</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/styles.css" rel="stylesheet">
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/webjars/bootstrap/bootstrap.js"></script>
     <script src="/app.js"></script>
 </head>
 <body>
@@ -13,6 +15,12 @@
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-12">
+           <div id="alert-container" style="padding: 5px;">
+           </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-6">
             <form class="form-inline">

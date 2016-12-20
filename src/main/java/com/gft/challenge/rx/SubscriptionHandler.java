@@ -4,7 +4,6 @@ import com.gft.challenge.rx.event.FileEventReactiveStream;
 import com.gft.challenge.rx.event.FileEventReactiveStreamObserver;
 import com.gft.challenge.rx.struct.DirStructureReactiveStream;
 import com.gft.challenge.rx.struct.DirStructureReactiveStreamObserver;
-import com.gft.challenge.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
-import rx.Observer;
 import rx.Subscription;
-import rx.functions.Action1;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.nio.file.Path;
 
 @Component
 @SessionScope

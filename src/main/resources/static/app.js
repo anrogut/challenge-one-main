@@ -41,15 +41,15 @@ function connect() {
 
 function addEvent(event) {
     var eventObj = JSON.parse(event);
-    var labelClass = eventObj.eventType === 'ENTRY_CREATE' ? 'label-success' : 'label-danger';
-    $('#events').append('<tr><td><span class="label ' +labelClass + '">' + eventObj.eventType + '</span></td>' +
-                        '<td>' + eventObj.absolutePath + '</td></tr>');
+    var labelClass = eventObj.payload.eventType === 'ENTRY_CREATE' ? 'label-success' : 'label-danger';
+    $('#events').append('<tr><td><span class="label ' +labelClass + '">' + eventObj.payload.eventType + '</span></td>' +
+                        '<td>' + eventObj.payload.absolutePath + '</td></tr>');
 }
 
 function addFileToStructure(file) {
-    if(file != 'done') {
-        var fileObj = JSON.parse(file);
-        var humanReadablePath = decodeURIComponent(fileObj.path.substr(8)); // remove 'file:///'
+    var fileObj = JSON.parse(file);
+    if(fileObj.messageType === 'DEFAULT') {
+        var humanReadablePath = decodeURIComponent(fileObj.payload.path.substr(8)); // remove 'file:///'
         var iconClass = humanReadablePath.charAt(humanReadablePath.length - 1) === '/' ? 'glyphicon glyphicon-folder-open' : 'glyphicon glyphicon-file';
         $('#files').append('<tr><td><span class="' + iconClass + '"></span>    ' + humanReadablePath + '</td></tr>')
     }

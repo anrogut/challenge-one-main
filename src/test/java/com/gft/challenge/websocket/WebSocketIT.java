@@ -112,10 +112,13 @@ public class WebSocketIT {
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream,dirStructureReactiveStream);
         subscriptionHandler.observeDirectory("/home",1);
         subscriptionHandler.sendDirectoryStructure("/home", 1);
+        awaitMessagesCount(dirs,1, 5000, TimeUnit.MILLISECONDS);
 
 
         String jsonString = dirs.poll(5000, TimeUnit.MILLISECONDS);
-        assertThat(jsonString.contains(p.toString())).isTrue();
+
+        assertThat(jsonString.contains(p.toString())).isNotNull();
+        assertThat(jsonString.contains("/home/test"));
     }
 
     @Test

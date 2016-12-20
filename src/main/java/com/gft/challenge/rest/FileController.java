@@ -21,7 +21,7 @@ public class FileController {
 
     @GetMapping(value = "/addFile")
     public ResponseEntity<Void> addFile(@RequestParam(value = "name") String name) throws IOException {
-        fileService.createFile(name);
+        fileService.createResource(name);
         return ResponseEntity.ok().build();
     }
 }

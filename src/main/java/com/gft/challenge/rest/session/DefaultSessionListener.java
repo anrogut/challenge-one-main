@@ -13,7 +13,7 @@ public class DefaultSessionListener implements HttpSessionListener {
     private final EndpointProviderService endpointProviderService;
 
     @Autowired
-    public DefaultSessionListener(EndpointProviderService endpointProviderService) {
+    DefaultSessionListener(EndpointProviderService endpointProviderService) {
         this.endpointProviderService = endpointProviderService;
     }
 

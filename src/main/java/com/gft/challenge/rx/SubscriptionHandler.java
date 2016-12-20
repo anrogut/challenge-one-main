@@ -50,7 +50,7 @@ public class SubscriptionHandler implements AutoCloseable {
     }
 
 
-    public Subscription getSubscription() {
+    Subscription getSubscription() {
         return fileEventSubscription;
     }
 

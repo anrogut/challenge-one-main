@@ -1,4 +1,4 @@
-package com.gft.challenge.websocket;
+package com.gft.challenge.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gft.challenge.ChallengeOneMainApplication;

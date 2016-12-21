@@ -6,4 +6,4 @@ server:
     timeout: 120
 
 observable:
-  path: "C:/Temp/"
+  path: "/home/"

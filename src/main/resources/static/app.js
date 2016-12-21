@@ -69,7 +69,7 @@ function addFileToStructure(file) {
 }
 
 function disconnect() {
-    if (stompClient != null) {
+    if (stompClient !== null) {
         stompClient.disconnect();
     }
     connected = false

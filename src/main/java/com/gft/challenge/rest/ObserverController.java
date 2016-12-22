@@ -38,4 +38,9 @@ public class ObserverController {
         subscriptionHandler.sendDirectoryStructure(path, endpointId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/heartbeat")
+    public ResponseEntity<String> heartbeat(HttpSession session) {
+        return ResponseEntity.ok().body("Great! You're still here!");
+    }
 }

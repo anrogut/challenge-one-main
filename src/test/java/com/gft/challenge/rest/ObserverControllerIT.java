@@ -10,11 +10,13 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -53,5 +55,11 @@ public class ObserverControllerIT {
         when(endpointProviderService.getEndpoint("2")).thenReturn(Optional.of(2));
         mockMvc.perform(get("/structure")).andExpect(status().isOk());
         verify(subscriptionHandler, times(1)).sendDirectoryStructure(anyString(), anyInt());
+    }
+
+    @Test
+    public void heartbeatShouldReturn200OK() throws Exception {
+        MvcResult result = mockMvc.perform(get("/heartbeat")).andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("Great! You're still here!");
     }
 }

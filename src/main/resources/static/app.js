@@ -36,7 +36,19 @@ function connect() {
         setTimeout(function() {
             $.get('/structure');
         },500);
+        setTimeout(function() {
+            heartbeat();
+        }, 30000);
     });
+}
+
+function heartbeat() {
+    if(connected) {
+        $.get('/heartbeat');
+        setTimeout(function() {
+            heartbeat();
+        }, 30000);
+    }
 }
 
 function addEvent(event) {

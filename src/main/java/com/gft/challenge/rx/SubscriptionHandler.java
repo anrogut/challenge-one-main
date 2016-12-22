@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import rx.Subscription;
 
-import javax.annotation.PostConstruct;
+
 import java.io.IOException;
 import java.nio.file.FileSystem;
 

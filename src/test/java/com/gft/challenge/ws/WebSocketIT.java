@@ -122,7 +122,7 @@ public class WebSocketIT {
 
         String jsonString = dirs.poll(5000, TimeUnit.MILLISECONDS);
 
-        assertThat(jsonString.contains(p.toString())).isNotNull();
+        assertThat(jsonString).isNotNull();
         assertThat(jsonString.contains("/home/test")).isTrue();
     }
 

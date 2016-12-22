@@ -11,5 +11,5 @@ services:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -t b4a080af-5c91-4cba-b5fe-f1ab4c05832f
-  - docker login -e $email -u $login -p $password
+  - docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
   - docker push arogut/challenge-one-main

@@ -1,5 +1,6 @@
 package com.gft.challenge.rx.event;
 
+import com.gft.challenge.rx.event.model.FileEvent;
 import com.gft.challenge.tree.PathNode;
 import com.gft.challenge.tree.TreeDescendantsProvider;
 import org.jetbrains.annotations.NotNull;

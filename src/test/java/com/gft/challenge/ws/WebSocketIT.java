@@ -2,7 +2,7 @@ package com.gft.challenge.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gft.challenge.ChallengeOneMainApplication;
-import com.gft.challenge.rx.event.FileEvent;
+import com.gft.challenge.rx.event.model.FileEvent;
 import com.gft.challenge.rx.event.FileEventReactiveStream;
 import com.gft.challenge.rx.event.FileEventReactiveStreamObserver;
 import com.gft.challenge.rx.SubscriptionHandler;

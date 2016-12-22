@@ -1,4 +1,4 @@
-package com.gft.challenge.rx.event;
+package com.gft.challenge.rx.event.model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ public class FileEvent {
         this.absolutePath = absolutePath;
     }
 
-    static FileEvent from(@NotNull WatchEvent<?> watchEvent,@NotNull String parentPath,@NotNull FileSystem fs) {
+    public static FileEvent from(@NotNull WatchEvent<?> watchEvent,@NotNull String parentPath,@NotNull FileSystem fs) {
         return new FileEvent(watchEvent.kind().name(), parentPath +
                 fs.getSeparator() + watchEvent.context().toString());
     }

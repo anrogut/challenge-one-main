@@ -1,6 +1,6 @@
 package com.gft.challenge.rx;
 
-import com.gft.challenge.rx.event.FileEvent;
+import com.gft.challenge.rx.event.model.FileEvent;
 import com.gft.challenge.rx.event.FileEventReactiveStream;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;

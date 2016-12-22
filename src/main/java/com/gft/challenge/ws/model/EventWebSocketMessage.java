@@ -1,6 +1,6 @@
 package com.gft.challenge.ws.model;
 
-import com.gft.challenge.rx.event.FileEvent;
+import com.gft.challenge.rx.event.model.FileEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class EventWebSocketMessage implements WebSocketMessage<FileEvent> {

@@ -1,5 +1,6 @@
 package com.gft.challenge.rx.event;
 
+import com.gft.challenge.rx.event.model.FileEvent;
 import com.gft.challenge.ws.model.EventWebSocketMessage;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import rx.Observer;

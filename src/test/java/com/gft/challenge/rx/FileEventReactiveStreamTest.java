@@ -49,6 +49,7 @@ public class FileEventReactiveStreamTest {
         Path temp = Files.createDirectory(fileSystem.getPath("/home/test"));
         Files.createFile(fileSystem.getPath("/home/file.txt"));
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        fileEventReactiveStream.init();
         Observable<FileEvent> observable = fileEventReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
 
@@ -66,6 +67,7 @@ public class FileEventReactiveStreamTest {
     public void shouldCorrectlyGetFileCreateEventFromNewlyCreatedDirectory() throws IOException, InterruptedException {
         TestSubscriber<FileEvent> testSubscriber = TestSubscriber.create();
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        fileEventReactiveStream.init();
         Observable<FileEvent> observable = fileEventReactiveStream.getEventStream(home);
         observable.subscribe(testSubscriber);
 
@@ -85,6 +87,7 @@ public class FileEventReactiveStreamTest {
     @Test
     public void shouldCloseCorrectly() throws Exception {
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        fileEventReactiveStream.init();
         fileEventReactiveStream.close();
 
         assertThatExceptionOfType(ClosedWatchServiceException.class)
@@ -98,8 +101,19 @@ public class FileEventReactiveStreamTest {
                 .thenThrow(new IOException());
 
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        fileEventReactiveStream.init();
 
         assertThatExceptionOfType(IOException.class).isThrownBy(() -> fileEventReactiveStream.getEventStream(home));
+    }
+
+    @Test
+    public void shouldThrowNullPointerExceptionWhenWatchServiceNotInitialized() throws IOException {
+        TestSubscriber<FileEvent> testSubscriber = TestSubscriber.create();
+        Files.createDirectory(fileSystem.getPath("/home/test"));
+        Files.createFile(fileSystem.getPath("/home/file.txt"));
+        FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> fileEventReactiveStream.getEventStream(home));
     }
 
 }

@@ -26,9 +26,10 @@ public class SubscriptionHandlerTest {
         FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
         Path rootPath = fs.getPath("/home");
         Files.createDirectory(rootPath);
-
+        FileEventReactiveStream fileEventReactiveStream =  new FileEventReactiveStream(fs);
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
-                fs, new FileEventReactiveStream(fs), new DirectoryStructureReactiveStream());
+                fs, fileEventReactiveStream, new DirectoryStructureReactiveStream());
+        fileEventReactiveStream.init();
 
         Subscription subscription = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
 
@@ -41,9 +42,10 @@ public class SubscriptionHandlerTest {
         FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
         Path rootPath = fs.getPath("/home");
         Files.createDirectory(rootPath);
-
+        FileEventReactiveStream fileEventReactiveStream =  new FileEventReactiveStream(fs);
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
-                fs, new FileEventReactiveStream(fs), new DirectoryStructureReactiveStream());
+                fs, fileEventReactiveStream, new DirectoryStructureReactiveStream());
+        fileEventReactiveStream.init();
 
         Subscription subscriptionOne = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
         Subscription subscriptionTwo = subscriptionHandler.observeDirectory(rootPath.toString(), 1);
@@ -56,9 +58,10 @@ public class SubscriptionHandlerTest {
         FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
         Path rootPath = fs.getPath("/home");
         Files.createDirectory(rootPath);
-
+        FileEventReactiveStream fileEventReactiveStream =  new FileEventReactiveStream(fs);
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(mock(SimpMessagingTemplate.class),
-                fs, new FileEventReactiveStream(fs), new DirectoryStructureReactiveStream());
+                fs, fileEventReactiveStream, new DirectoryStructureReactiveStream());
+        fileEventReactiveStream.init();
 
         subscriptionHandler.observeDirectory("/home", 1);
 

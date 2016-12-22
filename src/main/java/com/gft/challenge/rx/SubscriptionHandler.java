@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import rx.Subscription;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 
@@ -59,7 +60,6 @@ public class SubscriptionHandler implements AutoCloseable {
         directoryStructureReactiveStream.getDirStructureStream(fileSystem.getPath(path))
                 .subscribe(dirObserver);
     }
-
 
     Subscription getSubscription() {
         return fileEventSubscription;

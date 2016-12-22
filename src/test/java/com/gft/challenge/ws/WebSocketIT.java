@@ -89,6 +89,7 @@ public class WebSocketIT {
         Path home = fileSystem.getPath("/home");
         Files.createDirectory(home);
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        fileEventReactiveStream.init();
         Observable<FileEvent> observable = fileEventReactiveStream.getEventStream(home);
         observable.subscribe(new FileEventReactiveStreamObserver(simpMessagingTemplate, 1));
 
@@ -111,6 +112,7 @@ public class WebSocketIT {
         Path p = Files.createDirectory(fileSystem.getPath("/home/test"));
 
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
+        fileEventReactiveStream.init();
         DirectoryStructureReactiveStream directoryStructureReactiveStream = new DirectoryStructureReactiveStream();
         SubscriptionHandler subscriptionHandler = new SubscriptionHandler(simpMessagingTemplate,fileSystem,fileEventReactiveStream, directoryStructureReactiveStream);
         subscriptionHandler.observeDirectory("/home",1);

@@ -12,6 +12,7 @@ import org.springframework.web.context.annotation.SessionScope;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
@@ -30,21 +31,25 @@ public class FileEventReactiveStream implements AutoCloseable {
     @Autowired
     public FileEventReactiveStream(FileSystem fileSystem) throws IOException {
         this.fileSystem = fileSystem;
-        init();
     }
 
-    private void init() throws IOException {
-        watchService = fileSystem.newWatchService();
+    /**
+     * Should be called before getting event stream
+     * @throws IOException when unable to create WatchService
+     */
+    @PostConstruct
+    public void init() throws IOException {
+        this.watchService = fileSystem.newWatchService();
     }
 
     public Observable<FileEvent> getEventStream(@NotNull Path path) throws IOException {
-        if (!registerDirectory(path)) {
+        if (!registerDirectoryForCreateAndDeleteWatch(path)) {
             throw new IOException("Unable to register WatchService for root directory");
         }
 
         TreeDescendantsProvider.getDescendants(new PathNode(path)).forEachRemaining(pathNode -> {
             if (Files.isDirectory(pathNode.get())) {
-                registerDirectory(pathNode.get());
+                registerDirectoryForCreateAndDeleteWatch(pathNode.get());
             }
         });
 
@@ -52,7 +57,7 @@ public class FileEventReactiveStream implements AutoCloseable {
             WatchKey key = watchService.take();
             List<WatchEvent<?>> events = key.pollEvents();
             events.forEach(watchEvent ->
-                    registerNewDirectory(key, watchEvent));
+                    registerNewDirectoryForCreateAndDeleteWatch(key, watchEvent));
             List<FileEvent> fileEvents = events.stream()
                     .map(e -> FileEvent.from(e, key.watchable().toString(), fileSystem)).collect(Collectors.toList());
             key.reset();
@@ -61,14 +66,14 @@ public class FileEventReactiveStream implements AutoCloseable {
         return observable;
     }
 
-    private void registerNewDirectory(WatchKey key, WatchEvent<?> event) {
+    private void registerNewDirectoryForCreateAndDeleteWatch(WatchKey key, WatchEvent<?> event) {
         Path path1 = fileSystem.getPath(key.watchable().toString() + fileSystem.getSeparator() + event.context().toString());
         if (Files.isDirectory(path1)) {
-            registerDirectory(path1);
+            registerDirectoryForCreateAndDeleteWatch(path1);
         }
     }
 
-    private boolean registerDirectory(@NotNull Path path) {
+    private boolean registerDirectoryForCreateAndDeleteWatch(@NotNull Path path) {
         try {
             path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE);
             return true;

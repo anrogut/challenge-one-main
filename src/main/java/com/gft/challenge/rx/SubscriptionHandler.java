@@ -31,8 +31,6 @@ public class SubscriptionHandler implements AutoCloseable {
 
     private Subscription fileEventSubscription;
 
-    private FileEventReactiveStreamObserver observer;
-
     @Autowired
     public SubscriptionHandler(SimpMessagingTemplate simpMessagingTemplate,
                                FileSystem fileSystem,
@@ -49,9 +47,9 @@ public class SubscriptionHandler implements AutoCloseable {
         if (fileEventSubscription != null) {
             return fileEventSubscription;
         }
-        observer = new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId);
+        FileEventReactiveStreamObserver eventObserver = new FileEventReactiveStreamObserver(simpMessagingTemplate, endpointId);
         fileEventSubscription = fileEventReactiveStream.getEventStream(fileSystem.getPath(path))
-                .subscribe(observer);
+                .subscribe(eventObserver);
         return fileEventSubscription;
     }
 

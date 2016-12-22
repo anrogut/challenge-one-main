@@ -2,9 +2,12 @@ language: java
 jdk:
   - oraclejdk8
 
-sudo: false
+sudo: required
 
 script: mvn clean verify jacoco:report
+
+services:
+  - docker
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -t b4a080af-5c91-4cba-b5fe-f1ab4c05832f

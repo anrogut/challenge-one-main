@@ -8,6 +8,7 @@ import rx.Observer;
 public class FileEventReactiveStreamObserver implements Observer<FileEvent> {
 
     private static final String TOPIC_EVENT = "/topic/event/";
+    private static final String STREAM_COMPLETED = "Done";
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final int endpointId;
 
@@ -19,7 +20,7 @@ public class FileEventReactiveStreamObserver implements Observer<FileEvent> {
     @Override
     public void onCompleted() {
         simpMessagingTemplate
-                .convertAndSend(TOPIC_EVENT + endpointId, EventWebSocketMessage.withCompleteMessage("Done"));
+                .convertAndSend(TOPIC_EVENT + endpointId, EventWebSocketMessage.withCompleteMessage(STREAM_COMPLETED));
     }
 
     @Override

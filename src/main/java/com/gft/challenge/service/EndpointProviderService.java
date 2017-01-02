@@ -1,5 +1,6 @@
 package com.gft.challenge.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,7 +18,7 @@ public class EndpointProviderService {
         endPointNumber = new AtomicInteger(1);
     }
 
-    public Optional<Integer> getEndpoint(String sessionId) {
+    public Optional<Integer> getEndpoint(@NotNull String sessionId) {
         return Optional.ofNullable(sessionEndpoints.get(sessionId));
     }
 

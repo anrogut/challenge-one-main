@@ -21,14 +21,17 @@ public class PathNodeWebSocketMessage implements WebSocketMessage<Node<Path>> {
         this.payload = payload;
     }
 
+    @NotNull
     public static PathNodeWebSocketMessage withErrorMessage(@NotNull String message) {
         return new PathNodeWebSocketMessage(WebSocketMessageType.ERROR, message, null);
     }
 
+    @NotNull
     public static PathNodeWebSocketMessage from(@NotNull Node<Path> payload) {
         return new PathNodeWebSocketMessage(WebSocketMessageType.DEFAULT, null, payload);
     }
 
+    @NotNull
     public static PathNodeWebSocketMessage withCompleteMessage(@NotNull String message) {
         return new PathNodeWebSocketMessage(WebSocketMessageType.COMPLETE, message, null);
     }

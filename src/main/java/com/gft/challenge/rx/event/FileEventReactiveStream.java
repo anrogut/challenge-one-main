@@ -35,6 +35,7 @@ public class FileEventReactiveStream implements AutoCloseable {
 
     /**
      * Should be called before getting event stream
+     *
      * @throws IOException when unable to create WatchService
      */
     @PostConstruct
@@ -66,7 +67,7 @@ public class FileEventReactiveStream implements AutoCloseable {
         return observable;
     }
 
-    private void registerNewDirectoryForCreateAndDeleteWatch(WatchKey key, WatchEvent<?> event) {
+    private void registerNewDirectoryForCreateAndDeleteWatch(@NotNull WatchKey key, @NotNull WatchEvent<?> event) {
         Path path1 = fileSystem.getPath(key.watchable().toString() + fileSystem.getSeparator() + event.context().toString());
         if (Files.isDirectory(path1)) {
             registerDirectoryForCreateAndDeleteWatch(path1);

@@ -19,14 +19,17 @@ public class EventWebSocketMessage implements WebSocketMessage<FileEvent> {
         this.payload = payload;
     }
 
+    @NotNull
     public static EventWebSocketMessage withErrorMessage(@NotNull String message) {
         return new EventWebSocketMessage(WebSocketMessageType.ERROR, message, null);
     }
 
+    @NotNull
     public static EventWebSocketMessage from(@NotNull FileEvent payload) {
         return new EventWebSocketMessage(WebSocketMessageType.DEFAULT, null, payload);
     }
 
+    @NotNull
     public static EventWebSocketMessage withCompleteMessage(@NotNull String message) {
         return new EventWebSocketMessage(WebSocketMessageType.COMPLETE, message, null);
     }

@@ -109,7 +109,7 @@ public class WebSocketIT {
                 .build());
         Path home = fileSystem.getPath("/home");
         Files.createDirectory(home);
-        Path p = Files.createDirectory(fileSystem.getPath("/home/test"));
+        Files.createDirectory(fileSystem.getPath("/home/test"));
 
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);
         fileEventReactiveStream.init();

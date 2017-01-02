@@ -14,6 +14,8 @@ import java.io.IOException;
 @RestController
 public class ObserverController {
 
+    private static final String HEARTBEAT_MESSAGE = "Great! You're still here!";
+
     private final SubscriptionHandler subscriptionHandler;
     private final EndpointProviderService endpointProviderService;
 
@@ -40,7 +42,7 @@ public class ObserverController {
     }
 
     @GetMapping("/heartbeat")
-    public ResponseEntity<String> heartbeat(HttpSession session) {
-        return ResponseEntity.ok().body("Great! You're still here!");
+    public ResponseEntity<String> heartbeat() {
+        return ResponseEntity.ok().body(HEARTBEAT_MESSAGE);
     }
 }

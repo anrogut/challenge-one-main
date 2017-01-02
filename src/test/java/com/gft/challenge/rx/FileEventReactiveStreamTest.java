@@ -108,7 +108,6 @@ public class FileEventReactiveStreamTest {
 
     @Test
     public void shouldThrowNullPointerExceptionWhenWatchServiceNotInitialized() throws IOException {
-        TestSubscriber<FileEvent> testSubscriber = TestSubscriber.create();
         Files.createDirectory(fileSystem.getPath("/home/test"));
         Files.createFile(fileSystem.getPath("/home/file.txt"));
         FileEventReactiveStream fileEventReactiveStream = new FileEventReactiveStream(fileSystem);

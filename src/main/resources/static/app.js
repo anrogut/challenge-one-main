@@ -65,7 +65,9 @@ function addFileToStructure(file) {
     if(fileObj.messageType === 'DEFAULT') {
         var humanReadablePath = decodeURIComponent(fileObj.payload.path.substr(8)); // remove 'file:///'
         var iconClass = humanReadablePath.charAt(humanReadablePath.length - 1) === '/' ? 'glyphicon glyphicon-folder-open' : 'glyphicon glyphicon-file';
-        $('#files').append('<tr><td><span class="' + iconClass + '"></span>    ' + humanReadablePath + '</td></tr>')
+        if(!document.getElementById(humanReadablePath)) {
+            $('#files').append('<tr id="' + humanReadablePath + '"><td><span class="' + iconClass + '"></span>    ' + humanReadablePath + '</td></tr>')
+        }
     } else if (fileObj.messageType === 'COMPLETE') {
         $('#alert-container').append('<div class="alert alert-success alert-dismissible success-alert" role="alert">' +
                                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +

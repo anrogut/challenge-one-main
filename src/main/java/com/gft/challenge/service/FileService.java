@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -28,8 +29,9 @@ public class FileService {
         }
     }
 
-    private Path createFile(@NotNull String filename) throws IOException {
-        return Files.createFile(fileSystem.getPath(this.path + filename));
+    private Path createFile(@NotNull String path) throws IOException {
+        Files.createDirectories(fileSystem.getPath(this.path + path).getParent());
+        return Files.createFile(fileSystem.getPath(this.path + path));
     }
 
     private Path createDirectory(@NotNull String path) throws IOException {

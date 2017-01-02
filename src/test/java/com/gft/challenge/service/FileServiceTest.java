@@ -27,7 +27,7 @@ public class FileServiceTest {
         Files.createDirectory(testPath);
         FileService fileService = new FileService("/home/",fileSystem);
 
-        Path createdFilePath = fileService.createResource("file");
+        Path createdFilePath = fileService.createResource("1/file");
 
         assertThat(Files.exists(createdFilePath)).isTrue();
         assertThat(Files.isDirectory(createdFilePath)).isFalse();

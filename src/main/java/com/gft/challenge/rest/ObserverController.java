@@ -26,7 +26,7 @@ public class ObserverController {
     }
 
     @GetMapping("/connect")
-    public ResponseEntity<Integer> connect(@Value("${observable.path}") String path, HttpSession session) throws IOException {
+    public ResponseEntity<Integer> startWatchingDirectory(@Value("${observable.path}") String path, HttpSession session) throws IOException {
         int endpointId = endpointProviderService.getEndpoint(session.getId())
                 .orElseThrow(() -> new IllegalStateException("Something went wrong"));
         subscriptionHandler.observeDirectory(path, endpointId);

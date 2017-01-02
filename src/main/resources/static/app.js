@@ -12,7 +12,7 @@ function setConnected(connected) {
         $('#events').show();
     }
     else {
-        $('#events').hide();
+        $('#events').empty();
         $('#files').empty();
     }
 }

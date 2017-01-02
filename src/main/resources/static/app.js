@@ -8,10 +8,8 @@ window.onload = function() {
 function setConnected(connected) {
     $('#connect').prop('disabled', connected);
     $('#disconnect').prop('disabled', !connected);
-    if (connected) {
-        $('#events').show();
-    }
-    else {
+    $('#getStructure').prop('disabled', !connected)
+    if (!connected) {
         $('#events').empty();
         $('#files').empty();
     }
@@ -34,7 +32,7 @@ function connect() {
             });
         });
         setTimeout(function() {
-            $.get('/structure');
+            getStructure();
         },500);
         setTimeout(function() {
             heartbeat();
@@ -48,6 +46,12 @@ function heartbeat() {
         setTimeout(function() {
             heartbeat();
         }, 30000);
+    }
+}
+
+function getStructure() {
+    if(connected) {
+        $.get('/structure');
     }
 }
 
@@ -102,4 +106,5 @@ $(function () {
     $('#connect').click(function() { connect(); });
     $('#disconnect').click(function() { disconnect(); });
     $('#addFile').click(function() { addFile(); });
+    $('#getStructure').click(function() { getStructure();});
 });

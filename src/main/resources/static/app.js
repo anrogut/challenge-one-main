@@ -20,10 +20,10 @@ function connect() {
         var socket = new SockJS('/ws');
 
         stompClient = Stomp.over(socket);
+        stompClient.debug = null;
         stompClient.connect({}, function (frame) {
             connected = true;
             setConnected(connected);
-            console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/dir/' + id, function (dir) {
                 addFileToStructure(dir.body);
             })
@@ -92,7 +92,6 @@ function disconnect() {
     }
     connected = false
     setConnected(connected);
-    console.log('Disconnected');
 }
 
 function addFile() {

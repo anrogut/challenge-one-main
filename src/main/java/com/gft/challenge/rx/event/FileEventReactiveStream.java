@@ -25,7 +25,6 @@ public class FileEventReactiveStream implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(FileEventReactiveStream.class);
 
     private final FileSystem fileSystem;
-    private Observable<FileEvent> observable;
     private WatchService watchService;
 
     @Autowired
@@ -54,7 +53,7 @@ public class FileEventReactiveStream implements AutoCloseable {
             }
         });
 
-        observable = Observable.fromCallable(() -> {
+        return Observable.fromCallable(() -> {
             WatchKey key = watchService.take();
             List<WatchEvent<?>> events = key.pollEvents();
             events.forEach(watchEvent ->
@@ -64,7 +63,6 @@ public class FileEventReactiveStream implements AutoCloseable {
             key.reset();
             return fileEvents;
         }).flatMap(Observable::from).subscribeOn(Schedulers.io()).repeat();
-        return observable;
     }
 
     private void registerNewDirectoryForCreateAndDeleteWatch(@NotNull WatchKey key, @NotNull WatchEvent<?> event) {
@@ -88,7 +86,6 @@ public class FileEventReactiveStream implements AutoCloseable {
     @Override
     public void close() throws Exception {
         watchService.close();
-        observable = null;
     }
 
     public WatchService getWatchService() {

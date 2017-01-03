@@ -41,6 +41,6 @@ public class FileControllerIT {
 
     @Test
     public void shouldReturn200OK() throws Exception {
-        mockMvc.perform(get("/addFile?name=3.txt")).andExpect(status().isOk());
+        mockMvc.perform(get("/addFile?name=1/2/3.txt")).andExpect(status().isOk());
     }
 }
